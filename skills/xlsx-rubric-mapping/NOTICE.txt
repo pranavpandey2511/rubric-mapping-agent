@@ -1,0 +1,15 @@
+XLSX Rubric Mapping skill
+
+Selected technical guidance in this skill was adapted from OpenAI's historical
+`spreadsheet` skill at commit e6afb0d74cc75d220df2faf3dd6c635c2dc6a108,
+licensed under the Apache License, Version 2.0. The material has been
+substantially modified for read-only financial-workbook analysis, exact JSON
+contracts, evaluator isolation, and the three-stage rubric-mapping workflow.
+
+Source:
+https://github.com/openai/skills/blob/e6afb0d74cc75d220df2faf3dd6c635c2dc6a108/skills/.curated/spreadsheet/SKILL.md
+
+No text, code, or assets from Anthropic's proprietary XLSX skill are included
+or adapted. That skill was reviewed only to identify general technical risk
+categories, which were independently described and constrained for this
+project.

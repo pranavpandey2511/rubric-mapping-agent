@@ -1,0 +1,1204 @@
+{
+  "task_id": "topbuild_dcf",
+  "total_points": 100,
+  "chains": [],
+  "criteria": {
+    "criterion_1": {
+      "criterion_id": 1,
+      "description": "Forecasting balance sheet",
+      "max_points": 11.25,
+      "grading": [
+        {
+          "item_id": "1.1",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "For projected years, Short-Term Receivables and Inventories in Balance sheet should be linked to End of Period values of Accounts Receivable and Inventories in Current assets schedule."
+        },
+        {
+          "item_id": "1.2",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For projected years, Accounts Payable in Balance sheet should be linked to End of Period values of Accounts Payable in Current Liabilities schedule."
+        },
+        {
+          "item_id": "1.3",
+          "points": 0.8,
+          "method_points": 0.8,
+          "numerical_points": 0,
+          "condition": "For projected years, below items should be calculated as PY value x (1 + % Revenue growth): (1) Other Current Assets, (2) Total Long-Term Investments, (3) Deferred Tax Assets, (4) Other Assets, (5) Other Current Liabilities, (6) Provision for Risks & Charges, (7) Deferred Tax Liabilities, (8) Other Liabilities."
+        },
+        {
+          "item_id": "1.4",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For projected years, Total Current Assets should be calculated as sum of Cash & Short-Term Investments, Short-Term Receivables, Inventories and Other Current Assets."
+        },
+        {
+          "item_id": "1.5",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For projected years, Total Assets should be calculated as sum of Total Current Assets, Net Property, Plant & Equipment, Total Long-Term Investments, Intangible Assets, Deferred Tax Assets and Other Assets."
+        },
+        {
+          "item_id": "1.6",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For projected years, Total Current Liabilities should be calculated as sum of ST Debt & Curr. Portion LT Debt, Accounts Payable, Income Tax Payable and Other Current Liabilities. Do not award Method credit for this item if any non-zero value is populated for Income Tax Payable in any projected year, either through a formula or as a hardcoded value."
+        },
+        {
+          "item_id": "1.7",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For projected years, Total Liabilities should be calculated as sum of Total Current Liabilities, Long-Term Debt, Provision for Risks & Charges, Deferred Tax Liabilities and Other Liabilities."
+        },
+        {
+          "item_id": "1.8",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "For projected years, Total Equity should be calculated as Total Shareholder's Equity plus End of Period value of NCI from Non-controlling Interest Schedule."
+        },
+        {
+          "item_id": "1.9",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For projected years, Total Liabilities and Equity should be calculated as Total Equity plus Total Liabilities."
+        },
+        {
+          "item_id": "1.10",
+          "points": 1.75,
+          "method_points": 1.75,
+          "numerical_points": 0,
+          "condition": "For projected years, Net Property, Plant & Equipment should be calculated as End of Period PPE value from PP&E and Depreciation Schedule plus Finance Lease assets EOP plus Total ROU assets EOP."
+        },
+        {
+          "item_id": "1.11",
+          "points": 1.15,
+          "method_points": 1.15,
+          "numerical_points": 0,
+          "condition": "For projected years, Intangible Assets should be calculated as sum of End of period values of Goodwill and Intangibles from Intangibles Schedule."
+        },
+        {
+          "item_id": "1.12",
+          "points": 1.7,
+          "method_points": 1.7,
+          "numerical_points": 0,
+          "condition": "For projected years, ST Debt & Curr. Portion LT Debt should be calculated as Current portion of Long-term Debt plus End of Period value of Short-term Bank Credit/Revolver plus Current portion of lease liabilities (finance) plus Current portion of lease liabilities (operating)."
+        },
+        {
+          "item_id": "1.13",
+          "points": 1.7,
+          "method_points": 1.7,
+          "numerical_points": 0,
+          "condition": "For projected years, Long-Term Debt should be calculated as Non-current portion of Long-term Debt plus Non-current portion of lease liabilities (finance) plus Non-current portion of lease liabilities (operating)."
+        },
+        {
+          "item_id": "1.14",
+          "points": 1.15,
+          "method_points": 1.15,
+          "numerical_points": 0,
+          "condition": "For projected years, Total Shareholder's Equity should be calculated as PY value plus Net income minus Dividends Paid and Declared plus Stock Compensation and Exercise of Options plus Change in Capital stock."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Reconciliation of critical items like PPE and Intangibles; Correct linking from other financial statements and supporting schedules",
+        "Point-allocation rationale: Correct linking is essential for the 3-statement model to work properly. Need proper understanding of the items that were clubbed from financials in 10K."
+      ],
+      "deductibles": [
+        {
+          "condition": "Set this entire criterion score to 0 if balance sheet does not balance for any of the periods."
+        },
+        {
+          "condition": "Set this entire criterion score to 0 if any of the balance sheet item is used as a plug to balance out assets and liabilities + equity."
+        }
+      ]
+    },
+    "criterion_2": {
+      "criterion_id": 2,
+      "description": "Forecasting Cash flow statement",
+      "max_points": 9.75,
+      "grading": [
+        {
+          "item_id": "2.1",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "In projected years, Deferred Taxes & Investment Tax Credit should be calculated as YoY change in Deferred tax assets plus YoY change in Deferred tax liabilities. The formula/sign convention must reflect that increased assets = cash outflow, decreased assets = cash inflow, increased liabilities = cash inflow, decreased liabilities = cash outflow."
+        },
+        {
+          "item_id": "2.2",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, Funds from Operations should be calculated as Net Income plus Depreciation, Depletion & Amortization plus Deferred Taxes & Investment Tax Credit plus Other Funds in Operating activities section."
+        },
+        {
+          "item_id": "2.3",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, Cash Flow From Operating Activities should be calculated as Fund from Operations plus Changes in Working Capital."
+        },
+        {
+          "item_id": "2.4",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, Cash Flow From Investing Activities should be calculated as Capital Expenditures plus Net Assets from Acquisitions plus Sale of Fixed Assets & Businesses plus Purchase/Sale of Investments plus Other Funds in investing activities section. Do not award Method credit for this item if any non-zero value is populated for Sale of Fixed Assets & Businesses or Other Funds in Investing Activities in any projected year, either through a formula or as a hardcoded value."
+        },
+        {
+          "item_id": "2.5",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, Cash Flow From Financing Activities should be calculated as Change in Capital Stock plus Issuance/Reduction of Debt, Net plus Dividends plus Other Funds in financing activities section. Do not award Method credit for this item if any non-zero value is populated for Change in Capital Stock in any projected year, either through a formula or as a hardcoded value."
+        },
+        {
+          "item_id": "2.6",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, Net Change in Cash During Period should be calculated as sum of Cash Flow From Operating Activities, Cash Flow From Investing Activities, Cash Flow From Financing Activities and Effect of Exchange Rate on Cash and Equivalents. Do not award Method credit for this item if any non-zero value is populated for Effect of Exchange Rate on Cash and Equivalents in any projected year, either through a formula or as a hardcoded value."
+        },
+        {
+          "item_id": "2.7",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, Capital Expenditures should be linked to Capital Expenditures in PP&E and Depreciation Schedule and treated as a cash outflow."
+        },
+        {
+          "item_id": "2.8",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, Net Assets from Acquisitions should be the total acquisition spend and treated as a cash outflow."
+        },
+        {
+          "item_id": "2.9",
+          "points": 1.125,
+          "method_points": 1.125,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, Issuance/Reduction of Debt, Net should be the sum of current year Draw (paydown) of Senior Debt due 2029, Senior Debt due 2032, Term loan due 2026, Equipment notes and Short-term Bank Credit/Revolver. It can also be calculated as PY's Current portion of Long-term Debt treated as cash outflow plus Draw (Paydown) of Short-term Bank Credit/Revolver. Any other formula which yields the same logic is acceptable."
+        },
+        {
+          "item_id": "2.10",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, Dividends in Financing activities section should be linked to Dividends Declared and Paid and treated as a cash outflow."
+        },
+        {
+          "item_id": "2.11",
+          "points": 1.125,
+          "method_points": 1.125,
+          "numerical_points": 0,
+          "condition": "In projected years, Other funds in Financing activities should be linked to Cash payments on Finance Lease Obligations and treated as a cash outflow."
+        },
+        {
+          "item_id": "2.12",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "In projected years, Purchase/Sale of Investments should be calculated as YoY change in Total long-term investments. The formula/sign convention must reflect that increased assets = cash outflow, decreased assets = cash inflow."
+        },
+        {
+          "item_id": "2.13",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "In projected years, Changes in Working Capital should be calculated as YoY change in following items. (1) Short-Term Receivables (2) Inventories (3) Other Current Assets (4) Accounts Payable (5) Income Tax Payable (6) Other Current Liabilities The formula/sign convention must reflect that increased assets = cash outflow, decreased assets = cash inflow."
+        },
+        {
+          "item_id": "2.14",
+          "points": 3,
+          "method_points": 3,
+          "numerical_points": 0,
+          "condition": "In projected years, Other funds in Operating activities should be calculated as YoY change in following items plus Stock Compensation and Exercise of Options plus Amortization charge of Unamortized debt premium and issuance costs plus the Total lease cost less Cash payment for operating leases. (1) Other Assets (2) Provision for Risks & Charges (3) Other Liabilities The formula/sign convention must reflect that increased assets = cash outflow, decreased assets = cash inflow, Stock Compensation and Exercise of Options = cash inflow, Amortization charge of Unamortized debt premium and issuance costs = cash inflow, the amount of total lease cost not paid as cash = cash inflow. Do not award Method credit for this item if either of the following is not linked or referenced correctly: Amortization charge of Unamortized debt premium and issuance costs; Total lease cost less Cash payment for operating leases."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Reconciliation of critical items like lease payments and debt repayment; Correct linking from other financial statements and supporting schedules",
+        "Point-allocation rationale: Correct linking is essential for the 3-statement model to work properly."
+      ],
+      "partial_credit": [
+        "Award full points allocated to 2.13 and 2.14 if YoY change of items mentioned there are interchanged between Other funds and Changes in Working Capital but kept within Operating activities."
+      ]
+    },
+    "criterion_3": {
+      "criterion_id": 3,
+      "description": "Intangibles schedule",
+      "max_points": 7.5,
+      "grading": [
+        {
+          "item_id": "3.1",
+          "points": 0.175,
+          "method_points": 0.175,
+          "numerical_points": 0,
+          "condition": "From FY2022 onwards, Goodwill Beginning of Period value should be linked to PY's Goodwill End of Period value."
+        },
+        {
+          "item_id": "3.2",
+          "points": 0.175,
+          "method_points": 0,
+          "numerical_points": 0.175,
+          "condition": "FY2021 Goodwill Beginning of Period value should match with the gold file."
+        },
+        {
+          "item_id": "3.3",
+          "points": 0.5,
+          "method_points": 0,
+          "numerical_points": 0.5,
+          "condition": "For FY2021 - FY2023, value of Acquisitions, sale and related adjustments should match with the gold file."
+        },
+        {
+          "item_id": "3.4",
+          "points": 0.5,
+          "method_points": 0,
+          "numerical_points": 0.5,
+          "condition": "For FY2021 - FY2023, absolute value of Effect of foreign currency translation should match with the gold file."
+        },
+        {
+          "item_id": "3.5",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "If Acquisitions, sale and related adjustments are presented as positive values and Effect of foreign currency translation (for historical years) are presented with the same sign convention as that of the gold file, Goodwill End of Period should be calculated as Goodwill Beginning of Period plus Acquisitions, sale and related adjustments minus Effect of foreign currency translation. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "3.6",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In the projected years, Acquisitions, sale and related adjustments for Goodwill should be 'Allocation to Goodwill' in Acquisition Schedule and should increase the value of Goodwill End of Period in each of the years."
+        },
+        {
+          "item_id": "3.7",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In the historical years, Additional changes to Intangibles should be calculated as Intangibles End of Period plus Amortization minus Intangibles Beginning of Period, if Amortization is presented as a positive value. Award full points if the formula is adjusted correctly in case of a different sign convention. Amortization should include Amortization of Existing assets."
+        },
+        {
+          "item_id": "3.8",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In the projected years, Additional changes to Intangibles should be 'Allocation to Intangibles' in Acquisition Schedule and should increase the value of Intangibles End of Period in each of the years."
+        },
+        {
+          "item_id": "3.9",
+          "points": 0.175,
+          "method_points": 0.175,
+          "numerical_points": 0,
+          "condition": "From FY2022 onwards, Intangibles Beginning of Period value should be linked to PY's Intangibles End of Period value."
+        },
+        {
+          "item_id": "3.10",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "If Additional changes to Intangibles and Amortization are presented as positive values, Intangibles End of Period for projected years should be calculated as Beginning of Period plus Additional changes to Intangibles minus Amortization. Award full points if the formula is adjusted correctly in case of a different sign convention. Amortization should include both: Amortization of Existing assets and Amortization of Intangibles from Acquisitions in each projected year."
+        },
+        {
+          "item_id": "3.11",
+          "points": 0.175,
+          "method_points": 0,
+          "numerical_points": 0.175,
+          "condition": "FY2021 Intangibles Beginning of Period value should match with the gold file."
+        },
+        {
+          "item_id": "3.12",
+          "points": 0.5,
+          "method_points": 0,
+          "numerical_points": 0.5,
+          "condition": "Absolute value of Amortization of Existing assets in Intangibles schedule should match with the gold file."
+        },
+        {
+          "item_id": "3.13",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "Total Amortization should be calculated as Amortization of Existing assets plus Amortization of Intangibles from Acquisitions in each of the projected years."
+        },
+        {
+          "item_id": "3.14",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "Each forecast acquisition-intangibles tranche should begin amortizing in its acquisition year at that year's Allocation to Intangibles divided by the Useful Life assumption. The tranche formulas must include a termination control, observable even when the useful life extends beyond the displayed forecast, that prevents cumulative amortization from exceeding the tranche amount and returns zero after full amortization. For an integer Useful Life, applying the standard straight-line annual charge for exactly that number of years and zero thereafter is sufficient; otherwise, each period's charge should be limited to the remaining unamortized balance."
+        },
+        {
+          "item_id": "3.15",
+          "points": 0.5,
+          "method_points": 0,
+          "numerical_points": 0.5,
+          "condition": "For FY2021 - FY2023, Intangibles End of Period should match with the gold file."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Populating historical values of Goodwill and intangibles from SEC filings; Correct treatment of acquisition spend; Amortization schedule",
+        "Point-allocation rationale: To ensure that acquisition spend increases the Goodwill and Intangibles value and the amortization schedule is correctly built."
+      ]
+    },
+    "criterion_4": {
+      "criterion_id": 4,
+      "description": "PPE schedule",
+      "max_points": 7.55,
+      "grading": [
+        {
+          "item_id": "4.1",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In historical years, Capital Expenditures in PP&E and Depreciation Schedule should be linked directly to Capital Expenditures in Cash flow statement."
+        },
+        {
+          "item_id": "4.2",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "Total Depreciation should be calculated as sum of Depreciation of Existing assets, Depreciation of Assets from CapEx and Depreciation of Assets from Acquisitions."
+        },
+        {
+          "item_id": "4.3",
+          "points": 0.6,
+          "method_points": 0,
+          "numerical_points": 0.6,
+          "condition": "In FY2021 - FY2023, absolute value of Depreciation of Existing assets should match with the gold file."
+        },
+        {
+          "item_id": "4.4",
+          "points": 0.15,
+          "method_points": 0.15,
+          "numerical_points": 0,
+          "condition": "In projected years, Property, Plant and Equipment Beginning of Period should be linked to PY's Property, Plant and Equipment End of Period."
+        },
+        {
+          "item_id": "4.5",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In historical years, CapEx as % of revenue should be calculated as respective year's Capital Expenditures divided by respective year's Revenue."
+        },
+        {
+          "item_id": "4.6",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, CapEx as % of revenue should be calculated as 3Y moving average i.e. for FY2024, average of FY2021 - FY2023 values; for FY2025, average of FY2022 - FY2024 values and so on."
+        },
+        {
+          "item_id": "4.7",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In projected years, Capital Expenditures should be calculated as respective year's CapEx as % of revenue x respective year's Revenue."
+        },
+        {
+          "item_id": "4.8",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In projected years, Additions from acquisitions in PP&E and Depreciation Schedule should be linked to Allocation to PPE in Acquisition schedule and increase the value of Property, Plant and Equipment End of Period."
+        },
+        {
+          "item_id": "4.9",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In projected years, Property, Plant and Equipment End of Period should be calculated as Property, Plant and Equipment Beginning of Period plus Capital Expenditures plus Additions from acquisitions minus Depreciation, if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention. Depreciation should include Depreciation of Existing assets, Depreciation of Assets from CapEx and Depreciation of Assets from Acquisitions."
+        },
+        {
+          "item_id": "4.10",
+          "points": 0.5,
+          "method_points": 0,
+          "numerical_points": 0.5,
+          "condition": "In historical years, Property, Plant and Equipment End of period value should match with the gold file."
+        },
+        {
+          "item_id": "4.11",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In projected years, Depreciation from existing PP&E assets should be calculated as the 2023A Property, Plant and Equipment End of Period value divided by the Useful Life assumption of existing PPE, applied as a straight-line annual charge from 2024E onwards. The charge in each year should be the lesser of (i) the standard annual charge and (ii) the remaining undepreciated balance, and should be set to zero once the existing asset base is fully depreciated. If the Useful Life assumption is an integer, award full points even if the remaining undepreciated balance check is not implemented, provided the straight-line annual charge is applied for exactly that number of years and set to zero thereafter."
+        },
+        {
+          "item_id": "4.12",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "Each forecast CapEx addition should be depreciated as a separate straight-line tranche beginning in its addition year, using that tranche's CapEx divided by the Useful Life assumption for new PPE. Observable formula or schedule logic must limit each tranche to its useful life or remaining undepreciated balance and set it to zero thereafter, regardless of whether the displayed forecast horizon reaches the cutoff."
+        },
+        {
+          "item_id": "4.13",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "Each forecast addition from acquisitions should be depreciated as a separate straight-line tranche beginning in its addition year, using that tranche's Addition from acquisitions (Allocation to PPE) divided by the Useful Life assumption for new PPE. Observable formula or schedule logic must limit each tranche to its useful life or remaining undepreciated balance and set it to zero thereafter, regardless of whether the displayed forecast horizon reaches the cutoff."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Populating historical values from SEC filings; Correct treatment of acquisition spend; Depreciation schedule",
+        "Point-allocation rationale: To ensure that acquisition spend increases the PPE value and the depreciation schedule is correctly built."
+      ]
+    },
+    "criterion_5": {
+      "criterion_id": 5,
+      "description": "Debt schedule",
+      "max_points": 19.78,
+      "grading": [
+        {
+          "item_id": "5.1",
+          "points": 0.85,
+          "method_points": 0,
+          "numerical_points": 0.85,
+          "condition": "For all the years, absolute values of Draw (Paydown) for below tranches should match with the gold file: Senior Debt due 2029, Senior Debt due 2032, Term loan due 2026 and Equipment notes."
+        },
+        {
+          "item_id": "5.2",
+          "points": 0.65,
+          "method_points": 0,
+          "numerical_points": 0.65,
+          "condition": "For historical years, Principal amount (End of Period) for below tranches should match with the gold file: Senior Debt due 2029, Senior Debt due 2032, Term loan due 2026 and Equipment notes."
+        },
+        {
+          "item_id": "5.3",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In projected years, Principal amount (End of Period) for each debt tranche should increase by the Drawn amount or reduced by the Paydown / Repayment amount in the Draw (Paydown) section. For example: If the repayment amounts are presented as negative values and drawn amount as positive values, Principal amount (End of Period) should be calculated as PY value + CY Draw (Paydown) amount. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "5.4",
+          "points": 0.65,
+          "method_points": 0,
+          "numerical_points": 0.65,
+          "condition": "In projected years, Interest rates for all the debt tranches should match with the gold file."
+        },
+        {
+          "item_id": "5.5",
+          "points": 3.175,
+          "method_points": 3.175,
+          "numerical_points": 0,
+          "condition": "In projected years, Interest expense for all debt tranches should be calculated with linking to Circ toggle. If Circ toggle is on, interest rate of respective tranche should be multiplied by the average of PY and CY principal amount of respective tranche. If Circ toggle is off, interest expense should be populated as $0."
+        },
+        {
+          "item_id": "5.6",
+          "points": 0.525,
+          "method_points": 0,
+          "numerical_points": 0.525,
+          "condition": "For historical years, value of Current portion of Long-term Debt should match with the gold file."
+        },
+        {
+          "item_id": "5.7",
+          "points": 0.525,
+          "method_points": 0,
+          "numerical_points": 0.525,
+          "condition": "For historical years, value of Non-current portion of Long-term Debt should match with the gold file."
+        },
+        {
+          "item_id": "5.8",
+          "points": 0.525,
+          "method_points": 0,
+          "numerical_points": 0.525,
+          "condition": "For historical years, absolute value of Unamortized debt premium and issuance costs should match with the gold file."
+        },
+        {
+          "item_id": "5.9",
+          "points": 1.05,
+          "method_points": 1.05,
+          "numerical_points": 0,
+          "condition": "In FY2024 - FY2027, Current portion of Long-term Debt should be calculated as sum of Paydown of all the debt tranches in the following year."
+        },
+        {
+          "item_id": "5.10",
+          "points": 0.825,
+          "method_points": 0.825,
+          "numerical_points": 0,
+          "condition": "In FY2028, Current portion of Long-term Debt should be equal to FY2028's Principal amount of Senior debt due 2029."
+        },
+        {
+          "item_id": "5.11",
+          "points": 1.575,
+          "method_points": 1.575,
+          "numerical_points": 0,
+          "condition": "In projected years, Non-current portion of Long-term Debt should be equal to sum of Principal amount of all debt tranches minus Current portion of long-term debt minus Unamortized debt premium and issuance costs. The formula holds true if Unamortized debt premium and issuance costs is presented as positive value. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "5.12",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "In projected years, Unamortized debt premium and issuance costs should be calculated as PY value minus annual amortization charge. The annual amortization is the FY2023 value of Unamortized debt premium and issuance costs divided equally over five years."
+        },
+        {
+          "item_id": "5.13",
+          "points": 1.575,
+          "method_points": 1.575,
+          "numerical_points": 0,
+          "condition": "In projected years, total Interest Expense on Long-term Debt should be calculated as sum of Interest expense of all the debt tranches plus the amortization charge of Unamortized debt premium and issuance costs for the year."
+        },
+        {
+          "item_id": "5.14",
+          "points": 1.575,
+          "method_points": 1.575,
+          "numerical_points": 0,
+          "condition": "In projected years, Pre-revolver Cash Balance should be calculated as PY Cash & Short-Term Investments plus CY Cash Flow From Operating Activities plus Cash Flow From Investing Activities plus Change in Capital Stock plus Dividends from Cash flow statement (if dividends from Retained Earnings Schedule are used, it should be minus) plus Other Funds (in Financing activities section of cash flow statement) plus Effect of Exchange Rate on Cash and Equivalents."
+        },
+        {
+          "item_id": "5.15",
+          "points": 0.265,
+          "method_points": 0.265,
+          "numerical_points": 0,
+          "condition": "In projected years, Target minimum cash should be calculated as respective year's Revenue multiplied by Target Minimum Cash as a % of Revenue."
+        },
+        {
+          "item_id": "5.16",
+          "points": 2.5,
+          "method_points": 2.5,
+          "numerical_points": 0,
+          "condition": "Short-term Bank Credit/Revolver Draw (Paydown) should be calculated as follows: if Pre-revolver Cash Balance is less than the Target minimum cash, the Draw should equal the absolute value of the shortfall. If Pre-revolver Cash Balance is equal to or greater than the Target minimum cash, the Paydown should equal the lesser of (i) the excess of Pre-revolver Cash Balance over Target minimum cash and (ii) the Revolver Beginning of Period outstanding balance. Draw of Revolver should be presented as a positive value and paydown as negative value. Any formula that yields this logic is acceptable."
+        },
+        {
+          "item_id": "5.17",
+          "points": 0.15,
+          "method_points": 0.15,
+          "numerical_points": 0,
+          "condition": "In projected years, Beginning of Period (BOP) value of Short-term Bank Credit/Revolver should be linked to its prior year End of Period value."
+        },
+        {
+          "item_id": "5.18",
+          "points": 0.265,
+          "method_points": 0.265,
+          "numerical_points": 0,
+          "condition": "In projected years, End of Period value of Short-term Bank Credit/Revolver should be calculated as its Beginning of Period value plus Draw (Paydown)."
+        },
+        {
+          "item_id": "5.19",
+          "points": 0.75,
+          "method_points": 0.75,
+          "numerical_points": 0,
+          "condition": "In projected years, Interest expense for Short-term Bank Credit/Revolver should be calculated with linking to Circ toggle. If Circ toggle is on, weighted average interest rate of Short-term Bank Credit/Revolver should be multiplied by the average of PY and CY amount of Short-term Bank Credit/Revolver. If Circ toggle is off, interest expense should be populated as $0."
+        },
+        {
+          "item_id": "5.20",
+          "points": 0.75,
+          "method_points": 0.75,
+          "numerical_points": 0,
+          "condition": "In projected years, Interest income should be calculated with linking to Circ toggle. If Circ toggle is on, weighted average interest rate of Cash and equivalents should be multiplied by the average of PY and CY amount of Cash and short-term investments. If Circ toggle is off, interest income should be populated as $0."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Minimum cash and revolver; Interest expense and Interest income calculation with circ toggle; Correct treatment of Unamortized debt premium and issuance costs",
+        "Point-allocation rationale: Relatively high weight for treatment of circ toggle and Unamortized debt premium and issuance costs as well as Revolver drawdown / paydown calculation."
+      ]
+    },
+    "criterion_6": {
+      "criterion_id": 6,
+      "description": "Finance Lease schedule",
+      "max_points": 8.57,
+      "grading": [
+        {
+          "item_id": "6.1",
+          "points": 1.125,
+          "method_points": 0,
+          "numerical_points": 1.125,
+          "condition": "In historical years, absolute values of following items should match with the gold file: (1) Interest on Finance Lease Obligations (2) Cash payments on Finance Lease Obligations (3) Current portion of lease liabilities (finance lease) (4) Non-current portion of lease liabilities (finance lease) (5) Amortization on Finance Lease Assets (6) Finance Lease assets EOP (7) Finance lease liabilities EOP"
+        },
+        {
+          "item_id": "6.2",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "In FY2022 and FY2023, Interest rate on finance lease obligations should be calculated as respective year's Interest on Finance Lease Obligations divided by average of CY and PY Finance lease liabilities EOP."
+        },
+        {
+          "item_id": "6.3",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, below items should be held constant at FY2023 levels: (1) Interest rate on finance lease obligations (2) Cash payments as % of beginning lease balance (finance lease) (3) Current lease liabilities as a % of total (finance lease) (4) Finance lease liabilities EOP as % of revenue (5) Amortization as % of beginning lease assets"
+        },
+        {
+          "item_id": "6.4",
+          "points": 0.825,
+          "method_points": 0.825,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, interest on finance lease obligations should be calculated such that if circ toggle is on, Interest rate on finance lease obligations is multiplied by the average of CY and PY Finance lease liabilities EOP. If circ toggle is off, interest on finance lease obligations should be populated as $0."
+        },
+        {
+          "item_id": "6.5",
+          "points": 0.175,
+          "method_points": 0.175,
+          "numerical_points": 0,
+          "condition": "In FY2022 and FY2023, Cash payments as % of beginning lease balance (finance lease) should be calculated as respective year's Cash payments on Finance Lease Obligations divided by PY's Finance lease liabilities EOP."
+        },
+        {
+          "item_id": "6.6",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, Cash payments on Finance Lease Obligations should be calculated as respective year's Cash payments as % of beginning lease balance (finance lease) x PY's Finance lease liabilities EOP."
+        },
+        {
+          "item_id": "6.7",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "In historical years, Current lease liabilities as a % of total (finance lease) should be calculated as respective year's Current portion of lease liabilities (finance lease) divided by Finance lease liabilities EOP."
+        },
+        {
+          "item_id": "6.8",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "In historical years, Finance lease liabilities EOP as % of revenue should be calculated as respective year's Finance lease liabilities EOP divided by Revenue."
+        },
+        {
+          "item_id": "6.9",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "In projected years, Finance lease liabilities EOP should be calculated as respective year's revenue multiplied by Finance lease liabilities EOP as % of revenue."
+        },
+        {
+          "item_id": "6.10",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "In projected years, Current portion of lease liabilities (finance lease) should be calculated as respective year's Current lease liabilities as a % of total (finance lease) multiplied by Finance lease liabilities EOP."
+        },
+        {
+          "item_id": "6.11",
+          "points": 0.825,
+          "method_points": 0.825,
+          "numerical_points": 0,
+          "condition": "In projected years, Non-current portion of lease liabilities (finance lease) should be calculated as Finance lease liabilities EOP minus Current portion of lease liabilities (finance lease)."
+        },
+        {
+          "item_id": "6.12",
+          "points": 0.165,
+          "method_points": 0.165,
+          "numerical_points": 0,
+          "condition": "In projected years, Finance lease liabilities BOP should be linked to PY's Finance lease liabilities EOP."
+        },
+        {
+          "item_id": "6.13",
+          "points": 0.165,
+          "method_points": 0.165,
+          "numerical_points": 0,
+          "condition": "In projected years, Finance lease assets BOP should be linked to PY's Finance lease assets EOP."
+        },
+        {
+          "item_id": "6.14",
+          "points": 0.165,
+          "method_points": 0.165,
+          "numerical_points": 0,
+          "condition": "In FY2022 and FY2023, Amortization as % of beginning lease assets (finance lease) should be calculated as respective year's Amortization on Finance Lease Assets divided by PY's Finance Lease assets EOP."
+        },
+        {
+          "item_id": "6.15",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "In projected years, Amortization on Finance Lease Assets should be calculated as respective year's Amortization as % of beginning lease assets (finance lease) multiplied by PY's Finance Lease assets EOP."
+        },
+        {
+          "item_id": "6.16",
+          "points": 0.825,
+          "method_points": 0.825,
+          "numerical_points": 0,
+          "condition": "In projected years, Finance Lease assets EOP should be calculated as Finance Lease assets BOP plus New finance lease additions minus Amortization on finance lease assets, if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "6.17",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "In projected years, Cash principal payments should be linked to Cash payments on Finance Lease Obligations."
+        },
+        {
+          "item_id": "6.18",
+          "points": 0.9,
+          "method_points": 0.9,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, New finance lease additions should be calculated as Finance lease liabilities EOP plus Cash principal payments minus Finance lease liabilities BOP, if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Build up for finance lease assets and liabilities",
+        "Point-allocation rationale: Correct calculation for Interest on finance lease obligation, amortization of finance lease assets, new additions using liability roll forward is critical for BS and CFS."
+      ]
+    },
+    "criterion_7": {
+      "criterion_id": 7,
+      "description": "Operating lease schedule",
+      "max_points": 9.4,
+      "grading": [
+        {
+          "item_id": "7.1",
+          "points": 1,
+          "method_points": 0,
+          "numerical_points": 1,
+          "condition": "In historical years, absolute values of following items should match with the gold file: (1) Total lease cost (2) Cash payment for operating leases (3) Current portion of lease liabilities (operating lease) (4) Non-current portion of lease liabilities (operating lease) (5) Total ROU assets EOP (6) Operating lease liabilities EOP"
+        },
+        {
+          "item_id": "7.2",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "In historical years, Lease cost as % of revenue should be calculated as respective year's Total lease cost divided by Revenue."
+        },
+        {
+          "item_id": "7.3",
+          "points": 0.425,
+          "method_points": 0.425,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, total lease cost should be calculated as respective year's Lease cost as % of revenue multiplied by Revenue."
+        },
+        {
+          "item_id": "7.4",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, below items should be held constant at FY2023 levels: (1) Lease cost as % of revenue (2) Cash payment as % of total lease cost (3) Operating lease liabilities EOP as % of revenue (4) Current lease liabilities as a % of total (operating lease)"
+        },
+        {
+          "item_id": "7.5",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "In historical years, Cash payment as % of total lease cost should be calculated as Cash payment for operating leases divided by the Total lease cost."
+        },
+        {
+          "item_id": "7.6",
+          "points": 0.425,
+          "method_points": 0.425,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, Cash payment for operating leases should be calculated as respective year's Cash payment as % of total lease cost x Total lease cost."
+        },
+        {
+          "item_id": "7.7",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "In historical years, Current lease liabilities as a % of total (operating lease) should be calculated as respective year's Current portion of lease liabilities (operating lease) divided by Operating lease liabilities EOP."
+        },
+        {
+          "item_id": "7.8",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "In historical years, Operating lease liabilities EOP as % of revenue should be calculated as respective year's Operating lease liabilities EOP divided by Revenue."
+        },
+        {
+          "item_id": "7.9",
+          "points": 0.425,
+          "method_points": 0.425,
+          "numerical_points": 0,
+          "condition": "In projected years, Operating lease liabilities EOP should be calculated as respective year's revenue multiplied by Operating lease liabilities EOP as % of revenue."
+        },
+        {
+          "item_id": "7.10",
+          "points": 0.425,
+          "method_points": 0.425,
+          "numerical_points": 0,
+          "condition": "In projected years, Current portion of lease liabilities (operating lease) should be calculated as respective year's Current lease liabilities as a % of total (operating lease) multiplied by Operating lease liabilities EOP."
+        },
+        {
+          "item_id": "7.11",
+          "points": 0.425,
+          "method_points": 0.425,
+          "numerical_points": 0,
+          "condition": "In projected years, Non-current portion of lease liabilities (operating lease) should be calculated as Operating lease liabilities EOP minus Current portion of lease liabilities (operating lease)."
+        },
+        {
+          "item_id": "7.12",
+          "points": 0.175,
+          "method_points": 0.175,
+          "numerical_points": 0,
+          "condition": "In projected years, Operating lease liabilities BOP should be linked to PY's Operating lease liabilities EOP."
+        },
+        {
+          "item_id": "7.13",
+          "points": 0.175,
+          "method_points": 0.175,
+          "numerical_points": 0,
+          "condition": "In projected years, Total ROU assets BOP should be linked to PY's Total ROU assets EOP."
+        },
+        {
+          "item_id": "7.14",
+          "points": 0.825,
+          "method_points": 0.825,
+          "numerical_points": 0,
+          "condition": "In projected years, Total ROU assets EOP should be calculated as Total ROU assets BOP plus New lease additions minus ROU Amortization, if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "7.15",
+          "points": 0.425,
+          "method_points": 0.425,
+          "numerical_points": 0,
+          "condition": "In projected years, Cash lease payments (operating lease) should be linked to Cash payment for operating leases."
+        },
+        {
+          "item_id": "7.16",
+          "points": 0.825,
+          "method_points": 0.825,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, New lease additions (operating lease) should be calculated as Operating lease liabilities EOP plus Cash lease payments minus Interest accretion minus Operating lease liabilities BOP, if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "7.17",
+          "points": 0.825,
+          "method_points": 0.825,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, Interest accretion (operating lease) should be calculated by linking to circ toggle. If circ toggle is on, it should be calculated as Operating lease discount rate x Average of CY and PY Operating lease liabilities EOP. If circ toggle is off, it should be populated as $0."
+        },
+        {
+          "item_id": "7.18",
+          "points": 1.725,
+          "method_points": 1.725,
+          "numerical_points": 0,
+          "condition": "ROU amortization should be calculated as Total lease cost minus Interest accretion, if both items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Build up for operating lease assets and liabilities",
+        "Point-allocation rationale: Correct calculation for Interest on operating lease obligation, amortization of ROU assets, new additions using liability roll forward is critical for BS and CFS."
+      ]
+    },
+    "criterion_8": {
+      "criterion_id": 8,
+      "description": "Acquisition Schedule",
+      "max_points": 2.6,
+      "grading": [
+        {
+          "item_id": "8.1",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "From FY2024 onwards, Cashflow from Operations less CapEx should be calculated as Cash Flow From Operating Activities minus Capital Expenditures, if Circ toggle is on and latter is presented as a positive value. Award full points if the formula is adjusted correctly in case of a different sign convention. It should be populated as $0 if circ toggle is off. Do not award Method credit for this item if the formula does not incorporate the Circ toggle."
+        },
+        {
+          "item_id": "8.2",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "For every projected year, Acquisition spend must equal that year's Cashflow from Operations less CapEx multiplied by the same year's % of CFO minus CapEx assumption. The formula must preserve the product's sign, including returning a negative Acquisition spend when the product is negative."
+        },
+        {
+          "item_id": "8.3",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "Allocation to Goodwill should be calculated as respective year's Acquisition spend x Acquisition spend allocation to Goodwill assumption."
+        },
+        {
+          "item_id": "8.4",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "Allocation to Intangibles should be calculated as respective year's Acquisition spend x Acquisition spend allocation to Intangibles assumption."
+        },
+        {
+          "item_id": "8.5",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0,
+          "condition": "Allocation to PPE should be calculated as respective year's Acquisition spend x Acquisition spend allocation to PPE assumption."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Allocation of acquisition spend between goodwill, intangibles and PPE",
+        "Point-allocation rationale: Low weight as no complex calculations required."
+      ]
+    },
+    "criterion_9": {
+      "criterion_id": 9,
+      "description": "WACC calculation",
+      "max_points": 6.7,
+      "grading": [
+        {
+          "item_id": "9.1",
+          "points": 1.675,
+          "method_points": 1.675,
+          "numerical_points": 0,
+          "condition": "Total debt in Cost of Debt section should be calculated as Short-term Bank Credit/Revolver EOP + Current portion of Long-term Debt + Current portion of lease liabilities (finance lease) + Non-current portion of lease liabilities (finance lease) + Non-current portion of Long-term Debt. All the financials should be based on average of FY2022 and FY2023 values."
+        },
+        {
+          "item_id": "9.2",
+          "points": 0.85,
+          "method_points": 0.85,
+          "numerical_points": 0,
+          "condition": "Pre-tax Cost of Debt should be calculated as FY2023 Total Interest Expenses divided by Total Debt under Cost of Debt calculation (i.e. using average of FY2023 and FY2022 values)."
+        },
+        {
+          "item_id": "9.3",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "The effective tax rate used in the WACC calculation should equal FY2023 Taxes divided by FY2023 PBT when that rate is nonnegative; when it is negative, the WACC tax-rate output should instead calculate the average of the positive historical Taxes/PBT rates."
+        },
+        {
+          "item_id": "9.4",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Effective Cost of Debt should be calculated as Pre-tax Cost of Debt x (1 - Effective Tax Rate in WACC build sheet)."
+        },
+        {
+          "item_id": "9.5",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Cost of Equity should be calculated as Risk-free Rate + Equity Risk Premium x Company Beta (3Y Monthly)."
+        },
+        {
+          "item_id": "9.6",
+          "points": 1.675,
+          "method_points": 1.675,
+          "numerical_points": 0,
+          "condition": "Total debt in Capital Structure and WACC section should be calculated as Short-term Bank Credit/Revolver EOP + Current portion of Long-term Debt + Current portion of lease liabilities (finance lease) + Non-current portion of lease liabilities (finance lease) + Non-current portion of Long-term Debt. All the financials should be based on FY2023 values."
+        },
+        {
+          "item_id": "9.7",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Equity Value under Capital Structure and WACC section should be calculated as Latest Adj. Closing Share Price x Fully Diluted Shares Outstanding."
+        },
+        {
+          "item_id": "9.8",
+          "points": 0.5,
+          "method_points": 0.5,
+          "numerical_points": 0,
+          "condition": "Total Debt as % of Total Capital should be calculated as Total Debt (based on FY2023 values) divided by (Equity value + Total Debt based on FY2023 values)."
+        },
+        {
+          "item_id": "9.9",
+          "points": 0.5,
+          "method_points": 0.5,
+          "numerical_points": 0,
+          "condition": "Equity value as % of Total Capital should be calculated as Equity value divided by (Equity value + Total Debt based on FY2023 values)."
+        },
+        {
+          "item_id": "9.10",
+          "points": 0.5,
+          "method_points": 0.5,
+          "numerical_points": 0,
+          "condition": "The final WACC output should calculate Effective Cost of Debt multiplied by Debt % of Total Capital plus Cost of Equity multiplied by Equity % of Total Capital, using the corresponding calculated cost and capital-weight outputs."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Debt items used for calculating cost of debt Cost of equity and WACC calculation",
+        "Point-allocation rationale: Correct year and debt items mapping from the 3-statement model is critical for WACC calculation and subsequently implied share price calculation."
+      ]
+    },
+    "criterion_10": {
+      "criterion_id": 10,
+      "description": "UFCF calculation",
+      "max_points": 8.7,
+      "grading": [
+        {
+          "item_id": "10.1",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "NOPAT/EBIAT should be calculated as EBIT minus Tax on EBIT."
+        },
+        {
+          "item_id": "10.2",
+          "points": 1.65,
+          "method_points": 1.65,
+          "numerical_points": 0,
+          "condition": "From FY2022 onwards, Unlevered Free Cash Flow (UFCF) should be calculated as NOPAT plus Depreciation and Amortization plus Stock Compensation and Exercise of Options minus Change in Net Working Capital minus Capital Expenditures from PPE minus Acquisition spend. The formula holds true if: (1) Change in Net working capital is linked directly to Net Working Capital Schedule without any change in sign convention. (2) CapEx and Acquisition spend are populated as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention. Do not award Method credit for this item if Depreciation and Amortization used to calculate UFCF includes any component other than Total Amortization of Intangibles, Total Depreciation of Property, Plant and Equipment, and Amortization of Finance Lease Assets."
+        },
+        {
+          "item_id": "10.3",
+          "points": 1.25,
+          "method_points": 1.25,
+          "numerical_points": 0,
+          "condition": "Stub % should be calculated as the period between the valuation date and Stub year using the Actual/Actual date convention. One approach is to use the YEARFRAC function with start date = valuation date, end date = Stub year, and basis = 1. Stub year should be set to the FY2024 ending date if the Midyear Adjustment toggle is 0 (off), or average of valuation date and FY2024 ending date if the Midyear Adjustment toggle is 1 (on). Any other formula which yields the same result is acceptable."
+        },
+        {
+          "item_id": "10.4",
+          "points": 3,
+          "method_points": 3,
+          "numerical_points": 0,
+          "condition": "The periods for Discounting UFCF should be calculated using Actual/Actual day convention and be linked to a Midyear adjustment toggle (1 = on, 0 = off). If toggle is on: (1) For stub year, it should be calculated as the period between the valuation date and the average of FY2024 ending date & valuation date. (2) From year 2 onwards, it should be calculated as the period between valuation date and the average of current and previous fiscal year ending dates. If toggle is off, the period between valuation date and fiscal year ending dates should be used."
+        },
+        {
+          "item_id": "10.5",
+          "points": 0.9,
+          "method_points": 0.9,
+          "numerical_points": 0,
+          "condition": "Stub-adjusted Unlevered Free Cash Flow (UFCF) for stub year should be calculated as Stub % x FY2024 UFCF."
+        },
+        {
+          "item_id": "10.6",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "Stub-adjusted Unlevered Free Cash Flow (UFCF) from Year 2 onwards should be linked directly to respective fiscal year's UFCF."
+        },
+        {
+          "item_id": "10.7",
+          "points": 0.7,
+          "method_points": 0.7,
+          "numerical_points": 0,
+          "condition": "PV of Stub-adjusted UFCFs should be calculated as respective period's Stub-adjusted Unlevered Free Cash Flow (UFCF) divided by (1 + WACC or discount rate) ^ (respective period's discount factor i.e Periods for Discounting UFCF)."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Stub % and Discounting periods with mid-year adjustment toggle; UFCF calculation and stub adjustment",
+        "Point-allocation rationale: To check whether all items required for UFCF are included. Proper calculation of discounting periods using Actual/Actual convention with linking to mid-year adjustment toggle."
+      ]
+    },
+    "criterion_11": {
+      "criterion_id": 11,
+      "description": "Implied share price calculation and sensitivity tables",
+      "max_points": 8.2,
+      "grading": [
+        {
+          "item_id": "11.1",
+          "points": 0.15,
+          "method_points": 0.15,
+          "numerical_points": 0,
+          "condition": "Implied Terminal Value in Multiples Method section should be calculated as EV/EBITDA assumption x FY2028 EBITDA."
+        },
+        {
+          "item_id": "11.2",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Implied Terminal UFCF Growth Rate should be back-calculated as: (WACC x Implied Terminal Value using EV/EBITDA multiple minus FY2028 UFCF) divided by (Implied Terminal Value using EV/EBITDA multiple + FY2028 UFCF)."
+        },
+        {
+          "item_id": "11.3",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Implied Terminal Value in Perpetual growth method section should be calculated as FY2028 Unlevered Free Cash Flow (UFCF) x (1 + Terminal UFCF Growth Rate) divided by (WACC - Terminal UFCF Growth Rate)."
+        },
+        {
+          "item_id": "11.4",
+          "points": 0.15,
+          "method_points": 0.15,
+          "numerical_points": 0,
+          "condition": "Implied Terminal EV/EBITDA should be back-calculated as Implied Terminal Value from the Perpetual Growth Method divided by FY2028 EBITDA."
+        },
+        {
+          "item_id": "11.5",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "PV of Terminal Value should be calculated as Implied Terminal Value divided by (1 + Discount rate or WACC)^(Year 5 Period for Discounting UFCF). Ensure correct referencing to Implied Terminal value from Multiples Method and Perpetual Growth Method."
+        },
+        {
+          "item_id": "11.6",
+          "points": 0.15,
+          "method_points": 0.15,
+          "numerical_points": 0,
+          "condition": "Sum of PV of Stub-adjusted UFCFs should be calculated as sum of stub year to Year 5's PV of Stub-adjusted UFCFs."
+        },
+        {
+          "item_id": "11.7",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Implied Enterprise Value should be the sum of PV of Terminal Value and Sum of PV of Stub-adjusted UFCFs. Ensure correct referencing to PV of Terminal value from Multiples Method and Perpetual Growth Method."
+        },
+        {
+          "item_id": "11.8",
+          "points": 0.15,
+          "method_points": 0.15,
+          "numerical_points": 0,
+          "condition": "% of Implied EV from Terminal Value should be calculated as PV of Terminal Value divided by Implied Enterprise Value. Ensure correct referencing to PV of Terminal Value and Implied Enterprise Value from the Multiples Method and Perpetual Growth Method."
+        },
+        {
+          "item_id": "11.9",
+          "points": 0.55,
+          "method_points": 0.55,
+          "numerical_points": 0,
+          "condition": "FY2023 Cash & Short-Term Investments should be used in Implied Enterprise Value to Implied Equity Value bridge."
+        },
+        {
+          "item_id": "11.10",
+          "points": 1.75,
+          "method_points": 1.75,
+          "numerical_points": 0,
+          "condition": "FY2023 Current portion of Long-term Debt, FY2023 Non-current portion of Long-term Debt, FY2023 Finance lease liabilities EOP should be used as Debt & Capital Leases (excl. Operating Leases) in Implied Enterprise Value to Implied Equity Value bridge. Any other formula which yields the same result is acceptable."
+        },
+        {
+          "item_id": "11.11",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "Implied equity value should be calculated as implied enterprise value plus Cash and Cash Equivalents minus Total debt minus Preferred Stock minus Non-controlling interest, if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention. Ensure correct referencing to Implied Enterprise value from Multiples Method and Perpetual Growth Method. Do not award Method credit for this item if any non-zero value is populated for Preferred Stock or Non-controlling Interest in the Implied Enterprise Value to Implied Equity Value bridge, either through a formula or as a hardcoded value."
+        },
+        {
+          "item_id": "11.12",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Implied share price should be calculated as Implied Equity Value divided by Fully Diluted Shares Outstanding. Ensure correct referencing to Implied Equity value from Multiples Method and Perpetual Growth Method."
+        },
+        {
+          "item_id": "11.13",
+          "points": 0.25,
+          "method_points": 0.25,
+          "numerical_points": 0,
+          "condition": "Premium (Discount) to Current Price should be calculated as Implied share price divided by Latest Adj. Closing Share Price minus 1. Ensure correct referencing to Implied share price from Multiples Method and Perpetual Growth Method."
+        },
+        {
+          "item_id": "11.14",
+          "points": 0.55,
+          "method_points": 0.55,
+          "numerical_points": 0,
+          "condition": "Implied Y1 Multiples EV / Revenue, EV / EBITDA and EV / EBIT should be calculated as Implied Enterprise value divided by FY2024 Revenue, FY2024 EBITDA and FY2024 EBIT respectively. Ensure correct referencing to Implied Enterprise value from Multiples Method and Perpetual Growth Method."
+        },
+        {
+          "item_id": "11.15",
+          "points": 2.25,
+          "method_points": 2.25,
+          "numerical_points": 0,
+          "condition": "The EV/EBITDA Multiple Sensitivity table and the Terminal UFCF Growth Rate Sensitivity table of implied share price should be completed using Excel's Data Table function. For both tables, the Discount Rate (WACC) should be used as the row variable, centered on the WACC from the WACC build sheet as the midpoint, with 3 increments of 0.5% above midpoint and 3 increments of 0.5% below midpoint, resulting in 7 values."
+        }
+      ],
+      "grading_notes": [
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Normal links across the sheets or straightforward calculations have been graded but given low weight as compared to other complicated items like linking IS, BS and CFS for them to work properly as a 3-statement model or completing Schedules.",
+        "Section scoring focus: Enterprise value calculation based on Multiples method and Terminal growth method; Enterprise value to equity value bridge; Sensitivity tables for implied share price",
+        "Point-allocation rationale: Correct enterprise value to equity value is imperative for calculating implied share price and associated sensitivity tables."
+      ]
+    }
+  }
+}

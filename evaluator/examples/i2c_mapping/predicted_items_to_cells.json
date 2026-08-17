@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "item_id": "1.1",
+      "cells": [
+        {"sheet": "Model", "address": "B2"},
+        {"sheet": "Model", "address": "D2"}
+      ]
+    },
+    {
+      "item_id": "1.2",
+      "cells": [
+        {"sheet": "Model", "address": "B3"}
+      ]
+    },
+    {
+      "item_id": "2.1",
+      "cells": []
+    }
+  ]
+}

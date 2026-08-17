@@ -1,0 +1,4 @@
+interface:
+  display_name: "XLSX Rubric Mapping"
+  short_description: "Map workbook sections and rubric evidence"
+  default_prompt: "Use $xlsx-rubric-mapping to analyze the workbook and complete the requested rubric-mapping stage."

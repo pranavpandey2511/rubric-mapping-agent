@@ -1,0 +1,8 @@
+{
+  "$schema": "https://langgra.ph/schema.json",
+  "dependencies": ["."],
+  "graphs": {
+    "rubric_mapping": "rubric_mapping_agent.server:graph"
+  },
+  "env": ".env"
+}

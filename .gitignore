@@ -1,0 +1,16 @@
+.env
+.DS_Store
+.venv/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.langgraph_api/
+/artifacts/
+/outputs/
+/predictions/
+/eval_results.json
+/sections.json
+/subsections.json
+/items_to_cells.json

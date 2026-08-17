@@ -1,0 +1,797 @@
+{
+  "task_id": "textron_task_1_operating_model",
+  "total_points": 100.0,
+  "chains": [],
+  "criteria": {
+    "criterion_1": {
+      "criterion_id": 1,
+      "description": "Income Statement and its operating drivers",
+      "max_points": 21.35,
+      "grading": [
+        {
+          "item_id": "1.1",
+          "points": 4,
+          "method_points": 0,
+          "numerical_points": 4,
+          "condition": "From 2022A to 2024A, absolute value of following line items should match the gold file:\n(1) Textron Aviation Revenue or Net Sales,\n(2) Bell Revenue or Net Sales,\n(3) Textron Systems Revenue or Net Sales,\n(4) Industrial Revenue or Net Sales,\n(5) Textron eAviation Revenue or Net Sales,\n(6) Finance Revenue or Net Sales,\n(7) Textron Aviation Cost of Sales,\n(8) Bell Cost of Sales,\n(9) Textron Systems Cost of Sales,\n(10) Industrial Cost of Sales,\n(11) Textron eAviation Cost of Sales,\n(12) LIFO Inventory Provision,\n(13) Inventory Charge,\n(14) Research and development costs,\n(15) Depreciation expense from PPE,\n(16) Special charges,\n(17) Non-service components of postretirement income,\n(18) Income tax expense,\n(19) Loss from discontinued operations."
+        },
+        {
+          "item_id": "1.2",
+          "points": 2,
+          "method_points": 0,
+          "numerical_points": 2,
+          "condition": "From 2022A to 2024A, absolute value of following line items should match the gold file:\n(1) Selling and administrative expense,\n(2) Operating lease costs,\n(3) Interest expense on debt,\n(4) Interest income."
+        },
+        {
+          "item_id": "1.3",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, below items should be calculated as respective item in Income statement divided by total net sales and should be presented as a positive value:\n(1) SG&A expenses as % of net sales,\n(2) R&D expenses as % of net sales."
+        },
+        {
+          "item_id": "1.4",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, Other income as % of net sales should be calculated as Non-service components of postretirement income divided by total net sales."
+        },
+        {
+          "item_id": "1.5",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, Effective tax rate as % of income before taxes should be calculated as Income tax expense divided by Income before taxes and should be presented as a positive value."
+        },
+        {
+          "item_id": "1.6",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For 2023A and 2024A, Interest rate on debt as % of average O/S debt should be calculated as Interest expense divided by average of CY and PY total debt. It should be presented as a positive value."
+        },
+        {
+          "item_id": "1.7",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "For 2023A and 2024A, % income on average cash & cash equivalents should be calculated as Interest income divided by average of CY and PY Cash and cash equivalents. It should be presented as a positive value."
+        },
+        {
+          "item_id": "1.8",
+          "points": 1.8,
+          "method_points": 1.8,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, following operating model drivers should be linked to the Operating Scenario toggle such that the Growth, Base, Downside, or Extreme Downside assumption is populated based on the selected scenario:\n(1) % Increase in Revenue – Textron Aviation,\n(2) % Increase in Revenue – Bell,\n(3) % Increase in Revenue – Textron Systems,\n(4) % Increase in Revenue – Industrial."
+        },
+        {
+          "item_id": "1.9",
+          "points": 0.15,
+          "method_points": 0.15,
+          "numerical_points": 0,
+          "condition": "For 2023A and 2024A, the % Increase in Revenue for following segments should be calculated as CY Revenue divided by PY Revenue minus one:\n(1) Textron Aviation,\n(2) Bell,\n(3) Textron Systems,\n(4) Industrial."
+        },
+        {
+          "item_id": "1.10",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Revenue for segments mentioned in item 1.9 should be calculated as respective segment's PY Revenue multiplied by (1 + respective segment's % Increase in Revenue assumption based on scenario toggle)."
+        },
+        {
+          "item_id": "1.11",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "In the forecast years, Finance revenue should be calculated as 2024A Finance revenue multiplied by the sum of non-Finance segment revenues for the respective year, divided by 2024A non-Finance segment revenues. Non-Finance segment refers to Textron Aviation, Bell, Textron Systems, Industrial, and Textron eAviation.\n\nAlternatively, Finance revenue can be calculated as prior year Finance revenue multiplied by (1 + YoY growth rate of non-Finance segment revenues for the respective year), where the growth rate is calculated as respective forecast year's non-Finance segment revenues divided by the prior year's non-Finance segment revenues minus 1. Any other formula or referencing leading to the same result is acceptable."
+        },
+        {
+          "item_id": "1.12",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Net Sales should be calculated as the sum of below items:\n(1) Textron Aviation Revenue or Net Sales,\n(2) Bell Revenue or Net Sales,\n(3) Textron Systems Revenue or Net Sales,\n(4) Industrial Revenue or Net Sales,\n(5) Textron eAviation Revenue or Net Sales,\n(6) Finance Revenue or Net Sales."
+        },
+        {
+          "item_id": "1.13",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, % Gross Margin for segments mentioned in 1.9 should be calculated as 1 minus respective segment's Cost of Sales divided by respective segment's Net Sales, if Cost of Sales presented as a positive value. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "1.14",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Cost of sales should be calculated as the sum of below items:\n(1) Textron Aviation Cost of Sales,\n(2) Bell Cost of Sales,\n(3) Textron Systems Cost of Sales,\n(4) Industrial Cost of Sales,\n(5) Textron eAviation Cost of Sales,\n(6) LIFO Inventory Provision Cost of Sales,\n(7) Inventory Charge Cost of Sales,\n(8) Intangible Asset Amortization Cost of Sales."
+        },
+        {
+          "item_id": "1.15",
+          "points": 1.2,
+          "method_points": 1.2,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Cost of Sales for segments mentioned in 1.9 should be calculated as (1 − respective segment's Gross Margin % assumption) × respective segment's Net Sales. The formula holds true if Cost of sales in historical years is presented as positive value. Award full points if the formula is adjusted correctly in case of a different sign convention used for Cost of sales."
+        },
+        {
+          "item_id": "1.16",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Gross Margin should be calculated as Net Sales minus Cost of Sales if the latter is presented as a positive value. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "1.17",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, the following line items should be calculated as their respective % of Net Sales assumption multiplied by the respective year's total Net Sales:\n(1) Selling and Administrative Expense,\n(2) Research and Development Costs."
+        },
+        {
+          "item_id": "1.18",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Operating Lease Costs should be linked to Total Lease Payments from the Schedules sheet."
+        },
+        {
+          "item_id": "1.19",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, EBIT should be calculated as Gross Margin less Selling and Administrative Expense less Research and Development Costs less Operating Lease Costs if the latter items are presented as positive values. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "1.20",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Depreciation Expense from PPE should be linked to the Depreciation Charge for the Year (which includes depreciation from both existing and new assets) from PPE schedule."
+        },
+        {
+          "item_id": "1.21",
+          "points": 0.6,
+          "method_points": 0,
+          "numerical_points": 0.6,
+          "condition": "From 2022A onwards, absolute value of Amortization of Intangible Assets should match with the gold file."
+        },
+        {
+          "item_id": "1.22",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, EBITDA should be calculated as the EBIT plus Depreciation Expense from PPE plus Amortization of Intangible Assets if the latter items are presented as positive values. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "1.23",
+          "points": 1.2,
+          "method_points": 1.2,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Interest Expense on Debt should be calculated as the average of PY Total Debt and CY Total Debt multiplied by CY Interest Rate on Debt as a % of Average O/S Debt assumption."
+        },
+        {
+          "item_id": "1.24",
+          "points": 1.2,
+          "method_points": 1.2,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Interest Income should be calculated as the average of PY Cash and Cash Equivalents and CY Cash and Cash Equivalents multiplied by CY % Income on Average Cash and Cash Equivalents assumption."
+        },
+        {
+          "item_id": "1.25",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Non-service Components of Postretirement Income should be calculated as the respective year's Net Sales multiplied by the Other Income as a % of Net Sales assumption."
+        },
+        {
+          "item_id": "1.26",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Income Before Taxes should be calculated as EBIT less Special Charges less Interest Expense on Debt plus Interest Income plus Non-service Components of Postretirement Income if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "1.27",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Income from Continuing Operations should be calculated as Income Before Taxes less Income Tax Expense if latter is presented as a positive value. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "1.28",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Net Income should be calculated as Income from Continuing Operations less Loss from Discontinued Operations if Loss from Discontinued Operations is presented as a positive value. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "1.29",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, if Income before taxes is greater than zero, Income tax expense should be calculated as Income before taxes multiplied by the Effective tax rate % assumption, else it should be zero. Award full points if the check of income before taxes is not incorporated in the formula, only if Income before taxes is actually greater than zero."
+        }
+      ],
+      "grading_notes": [
+        "Direct values from Data room file are not scored as standalone items.",
+        "Direct links across the sheets and straightforward calculations have been graded but receive less weight as compared more complex items such as the Lease schedule or 3-statement model linkages.",
+        "Section scoring focus:\nHistorical income-statement mapping from 10K\nForecasting IS based on scenario-driven operating drivers\nCorrect treatment of interest income & expense",
+        "Point-allocation rationale: Moderate weight because this section builds mapping from 10K is important but straightforward. However, proper linking to Operating scenario toggle is important to forecast IS."
+      ],
+      "deductibles": [
+        {
+          "condition": "Deduct 20% of total points allocated to this criterion if any of the below items is populated with a non-zero value (either through a formula or hardcoded value) in the forecast years: Textron eAviation Net Sales; Textron eAviation Cost of Sales; LIFO Inventory Provision; Inventory Charge; Special charges; Loss from Discontinued Operations."
+        }
+      ]
+    },
+    "criterion_2": {
+      "criterion_id": 2,
+      "description": "Balance sheet and its drivers",
+      "max_points": 31.85,
+      "grading": [
+        {
+          "item_id": "2.1",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, below items should be calculated as respective item from BS divided by total net sales:\n(1) Accounts & notes receiv. as % of net sales,\n(2) Other current assets as % of net sales,\n(3) Other long term assets as % of net sales."
+        },
+        {
+          "item_id": "2.2",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, below items should be calculated as respective item from BS divided by total cost of sales and presented as a positive value:\n(1) Inventories as % cost of sales,\n(2) Accounts payable as % cost of sales."
+        },
+        {
+          "item_id": "2.3",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, below items should be calculated as respective item from BS divided by (total cost of sales plus Selling and administrative expense plus Research and development costs plus Operating lease costs) and presented as a positive value:\n(1) Other current liabilities as % total Costs + Opex,\n(2) Other non-current liabilities as % total Costs + Opex."
+        },
+        {
+          "item_id": "2.4",
+          "points": 3.5,
+          "method_points": 0,
+          "numerical_points": 3.5,
+          "condition": "From 2022A to 2024A, following Balance sheet line items should match the gold file:\n(1) Inventories,\n(2) Other current assets,\n(3) Property, plant and equipment, net,\n(4) Goodwill,\n(5) Accounts payable,\n(6) Common Stock,\n(7) Additional Paid-in Capital,\n(8) Retained Earnings,\n(9) Treasury Stock,\n(10) Accumulated Other Comprehensive Loss."
+        },
+        {
+          "item_id": "2.5",
+          "points": 3.5,
+          "method_points": 0,
+          "numerical_points": 3.5,
+          "condition": "From 2022A to 2024A, following Balance sheet line items should match the gold file:\n(1) Cash and cash equivalents,\n(2) Accounts and notes receivables,\n(3) Other Intangible Assets, Net,\n(4) Total Debt."
+        },
+        {
+          "item_id": "2.6",
+          "points": 6.75,
+          "method_points": 0,
+          "numerical_points": 6.75,
+          "condition": "From 2022A to 2024A, following Balance sheet line items should match the gold file:\n(1) Deferred Income Tax Assets, Net,\n(2) Operating Lease Assets,\n(3) Other Long-term Assets,\n(4) Other current liabilities,\n(5) Operating Lease Liabilities,\n(6) Other Non-current Liabilities."
+        },
+        {
+          "item_id": "2.7",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Current Assets should be calculated as the sum of below line items:\n(1) Cash and Cash Equivalents,\n(2) Accounts and Notes Receivables,\n(3) Inventories,\n(4) Other Current Assets."
+        },
+        {
+          "item_id": "2.8",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Long-term Assets should be calculated as the sum of below line items:\n(1) Property, Plant and Equipment, Net,\n(2) Goodwill,\n(3) Other Intangible Assets, Net,\n(4) Deferred Income Tax Assets, Net,\n(5) Operating Lease Assets,\n(6) Other Long-term Assets."
+        },
+        {
+          "item_id": "2.9",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Assets should be calculated as the sum of Total Current Assets and Total Long-term Assets."
+        },
+        {
+          "item_id": "2.10",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Current Liabilities should be calculated as the sum of Accounts Payable and Other Current Liabilities"
+        },
+        {
+          "item_id": "2.11",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Non-current Liabilities should be calculated as the sum of the following line items:\n(1) Total Debt,\n(2) Operating Lease Liabilities,\n(3) Other Non-current Liabilities."
+        },
+        {
+          "item_id": "2.12",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Liabilities should be calculated as the sum of Total Current Liabilities and Total Non-current Liabilities."
+        },
+        {
+          "item_id": "2.13",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Cash and Cash Equivalents should be linked to CY Cash and Cash Equivalents at End of Year from the Cash Flow Statement or calculated as PY value plus Net (decrease) increase in cash and cash equivalents."
+        },
+        {
+          "item_id": "2.14",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, the following line items should be calculated as Total Net Sales multiplied by respective item's % net sales assumption:\n(1) Accounts and Notes Receivables,\n(2) Other Current Assets."
+        },
+        {
+          "item_id": "2.15",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Inventories should be calculated as Total Cost of Sales multiplied by Inventories as a % of Cost of Sales assumption. It should be presented as a positive value."
+        },
+        {
+          "item_id": "2.16",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Property, Plant and Equipment, Net should be calculated as PY value plus Capital Expenditure minus Depreciation Expense from PPE if all the latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention. Alternatively, it can be linked directly to Net PPE assets calculated in PPE schedule."
+        },
+        {
+          "item_id": "2.17",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Goodwill should be calculated as PY value less Impairment of Goodwill assumption."
+        },
+        {
+          "item_id": "2.18",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Other Intangible Assets, Net should be calculated as PY value less Amortization of Intangible Assets if latter is presented as a positive value. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "2.19",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Equity should be calculated as the sum below line items:\n(1) Common Stock,\n(2) Additional Paid-in Capital,\n(3) Retained Earnings,\n(4) Treasury Stock,\n(5) Accumulated Other Comprehensive Loss."
+        },
+        {
+          "item_id": "2.20",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Total Liabilities and Equity should be calculated as the sum of Total Liabilities and Total Equity."
+        },
+        {
+          "item_id": "2.21",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, PY Common stock should be increased by number of shares issued x face value per share. The formula should have a condition that Common stock remains unchanged in years where net share activity is a repurchase."
+        },
+        {
+          "item_id": "2.22",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, PY Additional Paid-in capital should be increased by number of shares issued x Premium received above face value per share. The formula should have a condition that Additional paid-in capital remains unchanged in years where net share activity is a repurchase."
+        },
+        {
+          "item_id": "2.23",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, PY Treasury stock should be reduced by the number of shares repurchased x repurchase price per share. The formula should have a condition that treasury stock remains unchanged in years where net share activity is an issuance."
+        },
+        {
+          "item_id": "2.24",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Accumulated Other Comprehensive Loss should remain constant at its 2024A levels."
+        },
+        {
+          "item_id": "2.25",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Retained Earnings should be calculated as PY value plus respective year's Net Income less Dividend Payments on Common Stock if Dividends are presented as positive values. Award full points if the formula is adjusted correctly for a different sign convention."
+        },
+        {
+          "item_id": "2.26",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Accounts Payable should be calculated as Total Cost of Sales multiplied by the Accounts Payable as a % of Cost of Sales assumption. It should be presented as a positive value."
+        },
+        {
+          "item_id": "2.27",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, the following line items should be calculated as (Total Cost of Sales plus Selling and Administrative Expense plus Research and Development Costs plus Operating Lease Costs) multiplied by their respective % of Total Costs + Opex assumptions. These should be presented as positive values.\n(1) Other Current Liabilities,\n(2) Other Non-current Liabilities."
+        },
+        {
+          "item_id": "2.28",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Other Long-term Assets should be calculated as Total Net Sales multiplied by Other Long-term Assets as a % of Net Sales assumption."
+        },
+        {
+          "item_id": "2.29",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Operating Lease Assets and Operating Lease Liability should be linked to Lease Schedule."
+        },
+        {
+          "item_id": "2.30",
+          "points": 0.9,
+          "method_points": 0.9,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Total Debt should be calculated as PY value less Debt Repayment assumption."
+        },
+        {
+          "item_id": "2.31",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "In the forecast years, Deferred income taxes assets, net should be calculated as PY value plus absolute value of the deferred income taxes from the CFS (equivalently: PY value minus Deferred income taxes in CFS, where that item carries a negative sign). Alternatively, it can be calculated as PY value + absolute value of (Deferred Taxes as % book taxes assumption multiplied by the Income tax expense)."
+        }
+      ],
+      "grading_notes": [
+        "Direct values from Data room file are not scored as standalone items.",
+        "Direct links across the sheets and straightforward calculations have been graded but receive less weight as compared more complex items such as the Lease schedule or 3-statement model linkages.",
+        "Section scoring focus:\nHistorical balance-sheet population\nProper reconciliation of BS items like Deferred tax assets, Operating lease assets & liabilities, etc\nForecasting using Operating model drivers / assumptions",
+        "Point-allocation rationale: Highest weight because the balance sheet requires the broadest set of historical mappings. Balance sheet check is important for the operating model to be correct."
+      ],
+      "deductibles": [
+        {
+          "condition": "Set this entire criterion score to 0 if balance sheet does not balance for any of the periods."
+        },
+        {
+          "condition": "Set this entire criterion score to 0 if any balance-sheet line item is calculated from the residual difference between Total Assets and Total Liabilities and Equity, or an algebraically equivalent balance-sheet residual, to force the balance sheet to balance."
+        }
+      ]
+    },
+    "criterion_3": {
+      "criterion_id": 3,
+      "description": "Cash flow statement and its drivers",
+      "max_points": 20.8,
+      "grading": [
+        {
+          "item_id": "3.1",
+          "points": 6,
+          "method_points": 0,
+          "numerical_points": 6,
+          "condition": "From 2022A to 2024A, the following line items should match the gold file:\n(1) Asset Impairments and Powersports Inventory Charge,\n(2) Depreciation and Amortization,\n(3) Deferred Income Taxes,\n(4) Working Capital Changes,\n(5) Capital Expenditures,\n(6) Proceeds from Finance Receivables,\n(7) Equity Investees, Business Acquisitions, and Divestitures,\n(8) Other, net (under investing activities),\n(9) Proceeds from Borrowings,\n(10) Dividend Payments on Common Stock,\n(11) Issuance / Repurchase of Common Stock,\n(12) Other Financing Activities,\n(13) Effect of exchange rate changes,\n(14) Addition to operating leases,\n(15) Basic weighted-average shares outstanding."
+        },
+        {
+          "item_id": "3.2",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Consolidated net income in CFS should be linked to Income from Continuing Operations."
+        },
+        {
+          "item_id": "3.3",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A to 2024A, Capex as % of net sales should be calculated as CapEx divided by Total net sales and presented as a positive value."
+        },
+        {
+          "item_id": "3.4",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Basic Weighted-Average Shares Outstanding should be calculated as PY Basic Weighted-Average Shares Outstanding plus Shares Issued or Repurchased."
+        },
+        {
+          "item_id": "3.5",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Capex should be calculated as Capex as a % of Net Sales multiplied by Total Net Sales."
+        },
+        {
+          "item_id": "3.6",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Additions to Operating Leases should be calculated as Additions to Operating Leases as a % of Net Sales assumption multiplied by Total Net Sales."
+        },
+        {
+          "item_id": "3.7",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Depreciation and Amortization should be calculated as the sum of Depreciation Expense from the PPE schedule and Amortization of Intangible Assets. It is a non-cash item and hence should increase Cash flow from operating activities."
+        },
+        {
+          "item_id": "3.8",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "From 2025E onward, Deferred Income Taxes in the CFS should either equal the Deferred Taxes as % of Book Taxes assumption multiplied by the absolute value of Income Tax Expense and be presented as a negative value, with an equivalent sign-adjusted formula acceptable for an opposite Income Tax Expense sign convention, or equal PY less CY Deferred income tax assets, net where that balance-sheet account is independently forecast from the operating driver."
+        },
+        {
+          "item_id": "3.9",
+          "points": 3.5,
+          "method_points": 3.5,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Working Capital Changes in the CFS must equal the year-on-year changes in Accounts and Notes Receivables, Inventories, Other Current Assets, Other Long-term Assets, Accounts Payable, Other Current Liabilities, and Other Non-current Liabilities, with no other balance-sheet movements included. Asset increases must be cash outflows and liability increases must be cash inflows, with the inverse treatment for decreases. A calculation that includes another movement, such as an operating lease asset or liability movement, does not satisfy this item."
+        },
+        {
+          "item_id": "3.10",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Net Cash Provided by Operating Activities should be calculated as the sum of Consolidated Net Income, Asset Impairments and Powersports Inventory Charge, Depreciation and Amortization, Deferred Income Taxes, and Working Capital Changes."
+        },
+        {
+          "item_id": "3.11",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Capital expenditures in CFS should be linked to its values in Balance sheet & Cash flow statement drivers or calculated as respective year's Net sales x Capex % of net sales assumption or linked to CapEx in PPE schedule. Any of these approaches is acceptable but should be considered as a cash outflow."
+        },
+        {
+          "item_id": "3.12",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Net Cash Used in Investing Activities should be calculated as the sum of Capital Expenditures, Proceeds from Finance Receivables, Equity Investees, Business Acquisitions and Divestitures, and Other, Net."
+        },
+        {
+          "item_id": "3.13",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Proceeds from borrowings can either be linked directly to Debt repayment assumptions or can be calculated as YoY change in Total debt in Balance sheet. Either approach is acceptable, with repayment being a cash outflow."
+        },
+        {
+          "item_id": "3.14",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Dividend payments on common stock should be calculated as dividends paid per share x Basic weighted-average shares outstanding. It should be presented as cash outflow."
+        },
+        {
+          "item_id": "3.15",
+          "points": 1.2,
+          "method_points": 1.2,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, Issuance or Repurchase of common stock should be calculated as Shares Issued or Repurchased x Issue or Repurchase price. Issuance should be treated as cash inflow and repurchase as cash outflow."
+        },
+        {
+          "item_id": "3.16",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Net Cash (Used in) Provided by Financing Activities should be calculated as the sum of Proceeds from Borrowings, Dividend Payments on Common Stock, Issuance / Repurchase of Common Stock, and Other Financing Activities."
+        },
+        {
+          "item_id": "3.17",
+          "points": 0.6,
+          "method_points": 0,
+          "numerical_points": 0.6,
+          "condition": "For the period 2022A, Cash and cash equivalents at beginning of year should match the gold file."
+        },
+        {
+          "item_id": "3.18",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2023A onward, each period's Cash and cash equivalents at beginning of year should contain a formula linking to the immediately preceding period's Cash and cash equivalents at end of year."
+        },
+        {
+          "item_id": "3.19",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Net (Decrease) Increase in Cash and Cash Equivalents should be calculated as the sum of Net Cash Provided by Operating Activities, Net Cash Used in Investing Activities, Net Cash (Used in) Provided by Financing Activities, and Effect of Exchange Rate Changes."
+        },
+        {
+          "item_id": "3.20",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2022A onwards, Cash and cash equivalents at end of year should be calculated as sum of Cash and cash equivalents at beginning of year and Net (decrease) increase in cash and cash equivalents."
+        }
+      ],
+      "grading_notes": [
+        "Direct values from Data room file are not scored as standalone items.",
+        "Direct links across the sheets and straightforward calculations have been graded but receive less weight as compared more complex items such as the Lease schedule or 3-statement model linkages.",
+        "Section scoring focus:\nHistorical cash-flow statement population\nWorking-capital movements and the cash roll-forward",
+        "Point-allocation rationale: Moderate weight because working-capital changes and the cash roll-forward require careful sign treatment."
+      ],
+      "deductibles": [
+        {
+          "condition": "Deduct 20% of total points allocated to this criterion if any of the below items is populated with a non-zero value (either through a formula or hardcoded value) in the forecast years: Asset Impairments and Powersports Inventory Charge; Proceeds from Finance Receivables; Equity Investees, Business Acquisitions, and Divestitures; Other, Net (under investing activities); Other financing activities; Effect of exchange rate changes."
+        }
+      ]
+    },
+    "criterion_4": {
+      "criterion_id": 4,
+      "description": "PPE schedule",
+      "max_points": 8.5,
+      "grading": [
+        {
+          "item_id": "4.1",
+          "points": 1.2,
+          "method_points": 0,
+          "numerical_points": 1.2,
+          "condition": "Opening balance of gross PP&E for 2025E should match with the gold file."
+        },
+        {
+          "item_id": "4.2",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2026E onwards, opening balance of gross PP&E should be equal to PY's closing balance."
+        },
+        {
+          "item_id": "4.3",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2025E onwards, CapEx additions during the year should be linked to the CapEx in the operating model sheet."
+        },
+        {
+          "item_id": "4.4",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "For forecast years, closing balance of gross PP&E should be calculated as opening balance + CapEx additions for the year if Capex is presented as a positive value. Award full points if formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "4.5",
+          "points": 1,
+          "method_points": 1,
+          "numerical_points": 0,
+          "condition": "Depreciation from existing PP&E assets should be calculated as the 2025E opening net PP&E value (opening gross PP&E less opening accumulated depreciation) ÷ useful life of existing assets assumption, applied as a straight-line annual charge. The charge in each year should be the lesser of (i) the standard annual charge and (ii) the remaining undepreciated balance, and should be set to zero once the existing asset base is fully depreciated. Any formula achieving this dynamic logic is acceptable."
+        },
+        {
+          "item_id": "4.6",
+          "points": 3,
+          "method_points": 3,
+          "numerical_points": 0,
+          "condition": "Depreciation from each year's CapEx addition should be calculated as the CapEx amount ÷ useful life of new assets assumption, applied as a straight-line annual charge starting in the year of addition. The charge for each tranche in any given year should be the lesser of (i) the standard annual charge and (ii) the remaining undepreciated balance, and should be set to zero once the tranche is fully depreciated. Any formula achieving this dynamic logic is acceptable."
+        },
+        {
+          "item_id": "4.7",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "Total depreciation charge for the year for new assets should be the sum of all tranche depreciation charges for that period."
+        },
+        {
+          "item_id": "4.8",
+          "points": 0.6,
+          "method_points": 0,
+          "numerical_points": 0.6,
+          "condition": "Opening balance of accumulated depreciation for 2025E should match with the gold file."
+        },
+        {
+          "item_id": "4.9",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "From 2026E onwards, opening balance of accumulated depreciation should be equal to PY's closing balance."
+        },
+        {
+          "item_id": "4.10",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "Depreciation charge for the year should be calculated as the sum of depreciation from existing assets and depreciation from all active CapEx waterfall tranches for that year."
+        },
+        {
+          "item_id": "4.11",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "Closing balance of accumulated depreciation should be calculated as opening balance + depreciation charge for the year. Any other referencing that achieves the same logic is acceptable."
+        },
+        {
+          "item_id": "4.12",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "If accumulated depreciation is presented as a positive value, Net PP&E assets should be calculated as closing balance of gross PP&E minus closing balance of accumulated depreciation if depreciation is presented as a positive value. Award full points if formula is adjusted correctly in case of a different sign convention."
+        }
+      ],
+      "grading_notes": [
+        "Direct values from Data room file are not scored as standalone items.",
+        "Direct links across the sheets and straightforward calculations have been graded but receive less weight as compared more complex items such as the Lease schedule or 3-statement model linkages.",
+        "Section scoring focus:\nDepreciation for existing and new assets based on Useful life\nCalculating net PPE assets for BS",
+        "Point-allocation rationale: Lower weight as the Useful Life-based depreciation is a standard straight-line calculation."
+      ]
+    },
+    "criterion_5": {
+      "criterion_id": 5,
+      "description": "Lease schedule",
+      "max_points": 17.5,
+      "grading": [
+        {
+          "item_id": "5.1",
+          "points": 1.5,
+          "method_points": 1.5,
+          "numerical_points": 0,
+          "condition": "In the forecast years, Operating lease asset and Operating lease liability should be calculated as respective PY value plus Addition of new operating leases minus Total depreciation element if latter items are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "5.2",
+          "points": 2.5,
+          "method_points": 2.5,
+          "numerical_points": 0,
+          "condition": "In the forecast years, total lease payments should be calculated as the sum of existing lease annual payment and addition of annual payment from new operating leases if both are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention.\n\nThe existing lease annual payment can be calculated using the PMT function with RATE linked to the operating lease discount rate assumption, NPER linked to the existing lease remaining life assumption, FV as zero, and PV linked to the 2024A Operating lease liability, set to zero once the year counter exceeds the existing lease remaining life assumption. It should be adjusted for sign convention such that it increases the absolute value of total lease payments for the year. Any other formula that yields the same logic for existing lease annual payment is acceptable.\n\nAlternatively, total lease payments can be calculated as the sum of total interest element and total depreciation element if both of these have their respective calculation through IPMT and PPMT functions respectively as mentioned in items 5.3 and 5.4 and both are presented as positive values. Award full points if the formula is adjusted correctly in case of a different sign convention."
+        },
+        {
+          "item_id": "5.3",
+          "points": 2.5,
+          "method_points": 2.5,
+          "numerical_points": 0,
+          "condition": "In each forecast year, total interest element should equal interest on the amortizing existing-lease liability plus the new-lease interest waterfall total, adjusted for sign convention. Existing-lease interest should use the linked 2024A Operating lease liability, discount rate, remaining life, and elapsed forecast period, and should be zero after that remaining life expires. Interest attributable to each existing- or new-lease balance should be included exactly once. Any formula producing the same result is acceptable."
+        },
+        {
+          "item_id": "5.4",
+          "points": 2.5,
+          "method_points": 2.5,
+          "numerical_points": 0,
+          "condition": "In each forecast year, total depreciation element should equal the existing-lease principal or depreciation component plus new-lease annual payments less new-lease interest, adjusted for sign convention. The existing-lease component should use the linked 2024A Operating lease liability, discount rate, remaining life, and elapsed forecast period, and should be zero after that remaining life expires. Alternatively, total depreciation may equal total lease payments minus total interest when those totals are term-limited and include each existing- and new-lease component exactly once. Any formula producing the same result is acceptable."
+        },
+        {
+          "item_id": "5.5",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0,
+          "condition": "In the forecast years, new operating lease additions should be linked to the respective year's Addition to operating leases from the Operating_Model sheet."
+        },
+        {
+          "item_id": "5.6",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "Total addition of annual payment from new operating leases should be calculated as the sum of all tranche rows in the annual payment waterfall for the respective year."
+        },
+        {
+          "item_id": "5.7",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0,
+          "condition": "Total addition of interest payment from new operating leases should be calculated as the sum of all tranche rows in the interest payment waterfall for the respective year."
+        },
+        {
+          "item_id": "5.8",
+          "points": 3.5,
+          "method_points": 3.5,
+          "numerical_points": 0,
+          "condition": "In the forecast years, the incremental annual payment for each new lease tranche should be calculated using the PMT function with RATE linked to the operating lease discount rate assumption, NPER linked to the new lease remaining life assumption, and PV linked to the respective vintage year's new operating lease addition. The payment for a given tranche in a given year should be set to zero if year counter exceeds the new lease remaining life assumption. Each tranche row should be active only from its own vintage year onwards. Any other formula or referencing leading to the same result is acceptable."
+        },
+        {
+          "item_id": "5.9",
+          "points": 3.5,
+          "method_points": 3.5,
+          "numerical_points": 0,
+          "condition": "In the forecast years, the interest payment for each new lease tranche should equal IPMT-equivalent interest using the linked operating lease discount rate, linked new lease remaining life, the respective vintage year's linked new operating lease addition, and the tranche's elapsed period, with period 1 in its vintage year, period 2 in the following year, and so on. Each tranche row should be blank or zero before its vintage year. A literal IPMT formula is not required; any formula or referencing that produces the same tranche interest from these linked inputs is acceptable."
+        }
+      ],
+      "grading_notes": [
+        "Direct values from Data room file are not scored as standalone items.",
+        "Direct links across the sheets and straightforward calculations have been graded but receive less weight as compared more complex items such as the Lease schedule or 3-statement model linkages.",
+        "Section scoring focus:\nCalculation of operating lease liabilities and assets that are to be linked to BS\nPayment schedule for CFS and IS",
+        "Point-allocation rationale: High weight relative to PP&E because the lease schedule is conceptually more demanding."
+      ]
+    }
+  }
+}

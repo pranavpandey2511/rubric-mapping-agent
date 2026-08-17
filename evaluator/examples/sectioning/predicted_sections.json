@@ -1,0 +1,9 @@
+{
+  "sections": [
+    {
+      "section_id": "candidate_section",
+      "sheet": "Model",
+      "cells": ["A1", "A2"]
+    }
+  ]
+}

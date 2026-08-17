@@ -1,0 +1,36 @@
+{
+  "task_id": "example_task",
+  "total_points": 10.0,
+  "chains": [],
+  "criteria": {
+    "criterion_1": {
+      "criterion_id": 1,
+      "description": "Revenue forecast",
+      "max_points": 6.0,
+      "grading": [
+        {
+          "item_id": "1.1",
+          "points": 3.0,
+          "condition": "Revenue assumptions are present."
+        },
+        {
+          "item_id": "1.2",
+          "points": 3.0,
+          "condition": "Projected revenue uses the assumptions."
+        }
+      ]
+    },
+    "criterion_2": {
+      "criterion_id": 2,
+      "description": "Summary output",
+      "max_points": 4.0,
+      "grading": [
+        {
+          "item_id": "2.1",
+          "points": 4.0,
+          "condition": "The summary links to projected revenue."
+        }
+      ]
+    }
+  }
+}

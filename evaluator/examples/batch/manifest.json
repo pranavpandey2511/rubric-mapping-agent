@@ -1,0 +1,16 @@
+{
+  "tasks": [
+    {
+      "task_id": "example_task",
+      "sectioning": {
+        "predicted": "../sectioning/predicted_sections.json",
+        "gold": "../sectioning/gold_sections.json"
+      },
+      "i2c_mapping": {
+        "predicted": "../i2c_mapping/predicted_items_to_cells.json",
+        "gold": "../i2c_mapping/gold_items_to_cells.json",
+        "rubric": "../i2c_mapping/rubric.json"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+[project]
+name = "rubric-mapping-agent"
+version = "0.1.0"
+description = "Agentic spreadsheet sectioning and rubric item-to-cell mapping"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "deepagents",
+    "langchain-openai",
+    "openai",
+    "openpyxl",
+    "pandas",
+    "pydantic",
+    "python-dotenv",
+    "rubric-mapping-eval",
+]
+
+[project.scripts]
+rubric-map = "rubric_mapping_agent.workflow:main"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "langgraph-cli[inmem]",
+]
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+rubric-mapping-eval = { path = "evaluator", editable = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["rubric_mapping_agent*"]

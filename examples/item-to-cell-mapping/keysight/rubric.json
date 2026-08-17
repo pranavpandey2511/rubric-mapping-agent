@@ -1,0 +1,904 @@
+{
+  "task_id": "keysight_dcf",
+  "total_points": 100.0,
+  "chains": [],
+  "criteria": {
+    "criterion_1": {
+      "criterion_id": 1,
+      "description": "Forecasting income statement",
+      "max_points": 8.0,
+      "grading": [
+        {
+          "item_id": "1.1",
+          "points": 1.2,
+          "method_points": 1.2,
+          "numerical_points": 0.0,
+          "condition": "Historical Gross Profit Margin, SG&A as a percentage of Revenue and Other Operating Expense as a percentage of Revenue should be calculated from the corresponding historical income-statement lines. Historical values of these drivers in Revenue Build & Growth Drivers should link back to the Financial Statement Model, and projected margins in the Financial Statement Model should link to the corresponding assumptions in Revenue Build & Growth Drivers."
+        },
+        {
+          "item_id": "1.2",
+          "points": 1.8,
+          "method_points": 1.2,
+          "numerical_points": 0.6,
+          "condition": "In projected years, Gross Profit should equal Revenue multiplied by Gross Profit Margin; Cost of Sales should equal Revenue less Gross Profit; SG&A Expense and Other Operating Expense should equal Revenue multiplied by their respective assumptions; and EBIT should equal Gross Profit less SG&A Expense and Other Operating Expense. Numerical credit is awarded when the projected values of these lines match the gold file."
+        },
+        {
+          "item_id": "1.3",
+          "points": 1.4,
+          "method_points": 1.0,
+          "numerical_points": 0.4,
+          "condition": "In projected years, Nonoperating Income should be limited to Interest Income from the debt and interest schedule, Interest Expense should link to Total Interest Expense from that schedule, Unusual Expenses should be zero, and Pre-tax Profit should equal EBIT plus Nonoperating Income less Interest Expense and Unusual Expenses. Numerical credit is awarded when Pre-tax Profit and the linked interest lines match the gold file."
+        },
+        {
+          "item_id": "1.4",
+          "points": 1.1,
+          "method_points": 0.9,
+          "numerical_points": 0.2,
+          "condition": "Historical Effective Tax Rate should equal Income Taxes divided by Pre-tax Profit. Projected Effective Tax Rate should use the FY2023 rate when it is nonnegative and otherwise use the average of positive historical rates; this conditional selection should be implemented even when the FY2023 rate is currently nonnegative. The selected rate should be held constant through all projected years. Projected Income Taxes should equal Pre-tax Profit multiplied by the selected rate. Numerical credit is awarded when projected Income Taxes match the gold file."
+        },
+        {
+          "item_id": "1.5",
+          "points": 0.7,
+          "method_points": 0.7,
+          "numerical_points": 0.0,
+          "condition": "In projected years, Minority Interest should link to Net Income attributable to NCI from the Non-controlling Interest Schedule, and Net Income should equal Pre-tax Profit less Income Taxes and Minority Interest."
+        },
+        {
+          "item_id": "1.6",
+          "points": 0.8,
+          "method_points": 0.8,
+          "numerical_points": 0.0,
+          "condition": "In projected years, Depreciation and Amortization should equal depreciation from the PP&E Schedule plus amortization from the Intangibles Schedule, and EBITDA should equal EBIT plus Depreciation and Amortization."
+        },
+        {
+          "item_id": "1.7",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0.0,
+          "condition": "Projected Stock Compensation and Exercise of Options should be calculated using a rolling three-year average, beginning with the average of FY2021-FY2023 for FY2024 and rolling forward one year at a time."
+        },
+        {
+          "item_id": "1.8",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0.0,
+          "condition": "EBIT Margin, EBITDA Margin and Profit Margin should be calculated from the corresponding income-statement amounts divided by Revenue, and the displayed five-year CAGRs should be calculated consistently from FY2023 to FY2028."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Operating margin build, projected profitability, and links to debt, lease and supporting schedules",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Operating margin build, projected profitability and integration with supporting schedules",
+        "Point-allocation rationale: The forecast income statement drives taxes, cash flow, debt interest, working capital and the DCF. The highest weight is assigned to the operating build and schedule-linked items rather than simple margin displays."
+      ]
+    },
+    "criterion_2": {
+      "criterion_id": 2,
+      "description": "Forecasting balance sheet",
+      "max_points": 10.0,
+      "grading": [
+        {
+          "item_id": "2.1",
+          "points": 0.7,
+          "method_points": 0.5,
+          "numerical_points": 0.2,
+          "condition": "In projected years, Cash & Short-Term Investments should equal the prior-year ending cash balance plus the current-year Net Change in Cash During Period. Numerical credit is awarded when projected cash balances match the gold file."
+        },
+        {
+          "item_id": "2.2",
+          "points": 0.9,
+          "method_points": 0.7,
+          "numerical_points": 0.2,
+          "condition": "In projected years, Short-Term Receivables and Inventories should link to the respective End of Period values in the Current Assets Schedule. Accounts Payable should grow with Cost of Sales using the same year-over-year growth rate. Numerical credit is awarded when these projected balances match the gold file."
+        },
+        {
+          "item_id": "2.3",
+          "points": 1.0,
+          "method_points": 0.8,
+          "numerical_points": 0.2,
+          "condition": "In projected years, Other Current Assets, Total Long-Term Investments, Deferred Tax Assets, Other Assets, Other Current Liabilities, Provision for Risks & Charges, Deferred Tax Liabilities and Other Liabilities should each equal the prior-year value multiplied by one plus the current-year Revenue growth rate. Numerical credit is awarded when the resulting balances match the gold file."
+        },
+        {
+          "item_id": "2.4",
+          "points": 0.7,
+          "method_points": 0.6,
+          "numerical_points": 0.1,
+          "condition": "Total Current Assets should equal Cash & Short-Term Investments plus Short-Term Receivables, Inventories and Other Current Assets. Total Assets should equal Total Current Assets plus Net Property, Plant & Equipment, Total Long-Term Investments, Intangible Assets, Deferred Tax Assets and Other Assets. Numerical credit is awarded when projected totals match the gold file."
+        },
+        {
+          "item_id": "2.5",
+          "points": 1.5,
+          "method_points": 1.2,
+          "numerical_points": 0.3,
+          "condition": "In projected years, Net Property, Plant & Equipment should equal PP&E End of Period from the PP&E Schedule plus Total ROU Assets End of Period from the Operating Lease Schedule. Intangible Assets should equal Goodwill End of Period plus Intangibles End of Period from the Intangibles Schedule. Numerical credit is awarded when the linked balances match the gold file."
+        },
+        {
+          "item_id": "2.6",
+          "points": 1.2,
+          "method_points": 1.0,
+          "numerical_points": 0.2,
+          "condition": "In projected years, ST Debt & Current Portion of LT Debt should equal Short-term Bank Credit/Revolver End of Period plus Current Portion of Long-term Debt plus Current Portion of Operating Lease Liabilities. Numerical credit is awarded when the balance matches the gold file."
+        },
+        {
+          "item_id": "2.7",
+          "points": 1.0,
+          "method_points": 0.8,
+          "numerical_points": 0.2,
+          "condition": "In projected years, Long-Term Debt should equal Non-current Portion of Long-term Debt plus Non-current Portion of Operating Lease Liabilities. Numerical credit is awarded when the balance matches the gold file."
+        },
+        {
+          "item_id": "2.8",
+          "points": 0.7,
+          "method_points": 0.6,
+          "numerical_points": 0.1,
+          "condition": "Total Current Liabilities should equal ST Debt & Current Portion of LT Debt plus Accounts Payable, Income Tax Payable and Other Current Liabilities. Income Tax Payable should be zero in projected years. Total Liabilities should equal Total Current Liabilities plus Long-Term Debt, Provision for Risks & Charges, Deferred Tax Liabilities and Other Liabilities. Numerical credit is awarded when projected totals match the gold file."
+        },
+        {
+          "item_id": "2.9",
+          "points": 1.3,
+          "method_points": 1.0,
+          "numerical_points": 0.3,
+          "condition": "Projected Total Shareholder's Equity should equal the prior-year balance plus Net Income, Stock Compensation and Exercise of Options and Change in Capital Stock, less Dividends Paid and Declared. Total Equity should equal Total Shareholder's Equity plus NCI End of Period. Numerical credit is awarded when projected equity balances match the gold file."
+        },
+        {
+          "item_id": "2.10",
+          "points": 1.0,
+          "method_points": 0.8,
+          "numerical_points": 0.2,
+          "condition": "Total Liabilities and Equity should equal Total Liabilities plus Total Equity, and the Balance Check should equal zero in every period. Numerical credit is awarded when all projected checks match the gold file."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Reconciliation of PP&E, intangibles, debt and operating leases; correct statement and schedule links",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Reconciliation of PP&E, intangibles, debt and operating leases; correct statement and schedule links",
+        "Point-allocation rationale: A balanced forecast balance sheet is essential to the cash-flow statement, revolver mechanics and enterprise-to-equity bridge. Greater weight is assigned to the schedule-linked asset, debt and equity balances."
+      ],
+      "deductibles": [
+        {
+          "condition": "Set this entire criterion score to 0 if the balance sheet does not balance for any projected period."
+        },
+        {
+          "condition": "Set this entire criterion score to 0 if any balance-sheet line is used as an unsupported plug solely to force Assets to equal Liabilities and Equity."
+        }
+      ]
+    },
+    "criterion_3": {
+      "criterion_id": 3,
+      "description": "Forecasting cash flow statement",
+      "max_points": 9.5,
+      "grading": [
+        {
+          "item_id": "3.1",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "In projected years, Net Income should link to Net Income before minority interest in the income statement, and Depreciation, Depletion & Amortization should link to the projected Depreciation and Amortization line. Numerical credit is awarded when these linked values match the gold file."
+        },
+        {
+          "item_id": "3.2",
+          "points": 0.7,
+          "method_points": 0.6,
+          "numerical_points": 0.1,
+          "condition": "Deferred Taxes & Investment Tax Credit should reflect the year-over-year changes in Deferred Tax Assets and Deferred Tax Liabilities. The sign convention should treat an increase in an asset as a cash outflow and an increase in a liability as a cash inflow. Numerical credit is awarded when projected values match the gold file."
+        },
+        {
+          "item_id": "3.3",
+          "points": 2.3,
+          "method_points": 1.9,
+          "numerical_points": 0.4,
+          "condition": "Other Funds in Operating Activities should include Stock Compensation and Exercise of Options; the cash-flow effects of year-over-year changes in the full reported Other Assets, Provision for Risks & Charges, and full reported Other Liabilities balances; and Total Lease Cost less Cash Payment for Operating Leases. The full reported Other Assets and Other Liabilities balances include their ROU asset and lease-liability components. Increases in assets should be cash outflows and increases in liabilities should be cash inflows. Numerical credit is awarded when projected Other Funds match the gold file."
+        },
+        {
+          "item_id": "3.4",
+          "points": 1.6,
+          "method_points": 1.3,
+          "numerical_points": 0.3,
+          "condition": "Changes in Working Capital should reflect the year-over-year changes in Short-Term Receivables, Inventories, Other Current Assets, Accounts Payable, Income Tax Payable, and the full reported Other Current Liabilities balance, including its current lease-liability component. Increases in operating assets should be cash outflows and increases in operating liabilities should be cash inflows. Numerical credit is awarded when projected Changes in Working Capital match the gold file."
+        },
+        {
+          "item_id": "3.5",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "Funds from Operations should equal Net Income plus Depreciation, Depletion & Amortization plus Deferred Taxes & Investment Tax Credit plus Other Funds. Cash Flow From Operating Activities should equal Funds from Operations plus Changes in Working Capital. Numerical credit is awarded when projected totals match the gold file."
+        },
+        {
+          "item_id": "3.6",
+          "points": 1.5,
+          "method_points": 1.3,
+          "numerical_points": 0.2,
+          "condition": "Capital Expenditures should link to the PP&E Schedule and be treated as a cash outflow. Purchase/Sale of Investments should equal the cash-flow effect of the year-over-year change in Total Long-Term Investments. Net Assets from Acquisitions, Sale of Fixed Assets & Businesses and Other Funds should be zero in projected years. Cash Flow From Investing Activities should sum these lines. Numerical credit is awarded when projected values match the gold file."
+        },
+        {
+          "item_id": "3.7",
+          "points": 1.9,
+          "method_points": 1.6,
+          "numerical_points": 0.3,
+          "condition": "Issuance/Reduction of Debt, Net should capture the year-over-year changes in Short-term Bank Credit/Revolver and the current and non-current portions of Long-term Debt. Dividends should link to Dividends Paid and Declared and be treated as a cash outflow. Change in Capital Stock and Other Funds should be zero in projected years. Cash Flow From Financing Activities should sum these lines. Numerical credit is awarded when projected values match the gold file."
+        },
+        {
+          "item_id": "3.8",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0.0,
+          "condition": "Effect of Exchange Rate on Cash and Equivalents should be zero in projected years, and Net Change in Cash During Period should equal Cash Flow From Operating Activities plus Cash Flow From Investing Activities plus Cash Flow From Financing Activities plus the exchange-rate effect."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Working-capital, lease and debt cash-flow treatment; correct three-statement integration",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Working-capital, lease and debt cash-flow treatment; correct three-statement integration",
+        "Point-allocation rationale: The cash-flow statement closes the three-statement model and determines cash available for debt repayment or revolver draws. Working capital, operating leases and debt activity receive the highest weight."
+      ]
+    },
+    "criterion_4": {
+      "criterion_id": 4,
+      "description": "Current assets schedule",
+      "max_points": 6.0,
+      "grading": [
+        {
+          "item_id": "4.1",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "For Accounts Receivable, Beginning of Period should link to the prior-year End of Period balance, Increase (Decrease) should equal End of Period less Beginning of Period, and historical End of Period balances should link to the balance sheet. Numerical credit is awarded when the schedule values match the gold file."
+        },
+        {
+          "item_id": "4.2",
+          "points": 0.8,
+          "method_points": 0.6,
+          "numerical_points": 0.2,
+          "condition": "Historical Days Sales Outstanding should equal year-end Accounts Receivable multiplied by 365 and divided by Revenue. Revenue and Revenue Growth Rate should link to the Financial Statement Model, projected DSO assumptions should link from Revenue Build & Growth Drivers, and the historical DSO values in Revenue Build & Growth Drivers should link back to this schedule. Numerical credit is awarded only when all historical calculated values are correct and each projected DSO value exactly equals its corresponding provided assumption."
+        },
+        {
+          "item_id": "4.3",
+          "points": 1.4,
+          "method_points": 1.0,
+          "numerical_points": 0.4,
+          "condition": "Projected Accounts Receivable End of Period should respond to the A/R Forecasting Approach selector with both selections operational: Approach 1 applies Revenue Growth to the prior-year balance, while Approach 2 calculates Revenue multiplied by the projected DSO assumption linked from Revenue Build & Growth Drivers and divided by 365. The DSO used by Approach 2 should not be derived from projected Accounts Receivable. Any economically equivalent formula that implements both selections is acceptable. Numerical credit is awarded when projected balances match the gold file under the selected approach."
+        },
+        {
+          "item_id": "4.4",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "For Inventories, Beginning of Period should link to the prior-year End of Period balance, Increase (Decrease) should equal End of Period less Beginning of Period, and historical End of Period balances should link to the balance sheet. Numerical credit is awarded when the schedule values match the gold file."
+        },
+        {
+          "item_id": "4.5",
+          "points": 0.8,
+          "method_points": 0.6,
+          "numerical_points": 0.2,
+          "condition": "Historical Cost of Sales Growth should equal the year-over-year change in Cost of Sales, and historical Inventory Turnover should equal Cost of Sales divided by year-end Inventories for the applicable years. Cost of Sales should link to the Financial Statement Model, projected turnover assumptions should link from Revenue Build & Growth Drivers, and historical turnover values in Revenue Build & Growth Drivers should link back to this schedule. Numerical credit is awarded only when all historical calculated values are correct and each projected Inventory Turnover value exactly equals its corresponding provided assumption."
+        },
+        {
+          "item_id": "4.6",
+          "points": 1.4,
+          "method_points": 1.0,
+          "numerical_points": 0.4,
+          "condition": "Projected Inventories End of Period should respond to the Inventory Forecasting Approach selector with both selections operational: Approach 1 applies Cost of Sales Growth to the prior-year balance, while Approach 2 calculates Cost of Sales divided by the projected Inventory Turnover assumption linked from Revenue Build & Growth Drivers. The turnover used by Approach 2 should not be derived from projected Inventories. Any economically equivalent formula that implements both selections is acceptable. Numerical credit is awarded when projected balances match the gold file under the selected approach."
+        },
+        {
+          "item_id": "4.7",
+          "points": 0.4,
+          "method_points": 0.3,
+          "numerical_points": 0.1,
+          "condition": "Current Assets excluding Cash and Other Current Assets should equal Accounts Receivable End of Period plus Inventories End of Period in each period. Numerical credit is awarded when the subtotal matches the gold file."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Accounts receivable and inventory roll-forwards under the selected forecasting approaches",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Accounts receivable and inventory roll-forwards under the selected forecasting approaches",
+        "Point-allocation rationale: The schedule supports the balance sheet, operating working capital and UFCF. The toggle-driven forecast formulas receive more weight than straightforward historical links and subtotals."
+      ]
+    },
+    "criterion_5": {
+      "criterion_id": 5,
+      "description": "Intangibles schedule",
+      "max_points": 8.0,
+      "grading": [
+        {
+          "item_id": "5.1",
+          "points": 0.4,
+          "method_points": 0.0,
+          "numerical_points": 0.4,
+          "condition": "FY2021 Goodwill Beginning of Period should match the gold file."
+        },
+        {
+          "item_id": "5.2",
+          "points": 1.2,
+          "method_points": 0.0,
+          "numerical_points": 1.2,
+          "condition": "For FY2021-FY2023, Acquisitions, Sale and Related Adjustments and Effect of Foreign Currency Translation for Goodwill should match the gold file, including the applicable sign convention."
+        },
+        {
+          "item_id": "5.3",
+          "points": 0.8,
+          "method_points": 0.8,
+          "numerical_points": 0.0,
+          "condition": "From FY2022 onward, Goodwill Beginning of Period should link to the prior-year Goodwill End of Period. Goodwill End of Period should equal Beginning of Period plus Acquisitions, Sale and Related Adjustments less Effect of Foreign Currency Translation, adjusted appropriately if a different sign convention is used."
+        },
+        {
+          "item_id": "5.4",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "In projected years, Acquisitions, Sale and Related Adjustments and Effect of Foreign Currency Translation for Goodwill should be zero, causing Goodwill to remain constant absent other changes. Numerical credit is awarded when projected Goodwill balances match the gold file."
+        },
+        {
+          "item_id": "5.5",
+          "points": 0.4,
+          "method_points": 0.0,
+          "numerical_points": 0.4,
+          "condition": "FY2021 Intangibles Beginning of Period should match the gold file."
+        },
+        {
+          "item_id": "5.6",
+          "points": 0.8,
+          "method_points": 0.6,
+          "numerical_points": 0.2,
+          "condition": "For historical years, Additional Changes to Intangibles should be back-calculated so that Intangibles End of Period equals Beginning of Period plus Additional Changes less Amortization, if additions and amortization are presented as positive values. Numerical credit is awarded when historical Additional Changes match the gold file."
+        },
+        {
+          "item_id": "5.7",
+          "points": 1.8,
+          "method_points": 0.0,
+          "numerical_points": 1.8,
+          "condition": "Amortization for FY2021-FY2028 should match the historical and expected amortization amounts in the gold file."
+        },
+        {
+          "item_id": "5.8",
+          "points": 0.9,
+          "method_points": 0.8,
+          "numerical_points": 0.1,
+          "condition": "From FY2022 onward, Intangibles Beginning of Period should link to the prior-year End of Period. Intangibles End of Period should equal Beginning of Period plus Additional Changes less Amortization, adjusted appropriately for the sign convention used. Numerical credit is awarded when the roll-forward balances match the gold file."
+        },
+        {
+          "item_id": "5.9",
+          "points": 0.7,
+          "method_points": 0.4,
+          "numerical_points": 0.3,
+          "condition": "Historical Goodwill End of Period and Intangibles End of Period should reconcile to the corresponding historical balance-sheet Intangible Assets and match the gold file."
+        },
+        {
+          "item_id": "5.10",
+          "points": 0.4,
+          "method_points": 0.3,
+          "numerical_points": 0.1,
+          "condition": "Projected Additional Changes to Intangibles should be zero, and projected ending balances should decline solely by the expected amortization schedule. Numerical credit is awarded when projected Intangibles End of Period matches the gold file."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Historical goodwill and intangible disclosures; forecast amortization and roll-forwards",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Historical goodwill and intangible disclosures; forecast amortization and roll-forwards",
+        "Point-allocation rationale: The schedule requires both sourced 10-K data and correct roll-forward logic. Numerical weight is concentrated on historical disclosures and the expected amortization schedule."
+      ]
+    },
+    "criterion_6": {
+      "criterion_id": 6,
+      "description": "PP&E schedule",
+      "max_points": 7.5,
+      "grading": [
+        {
+          "item_id": "6.1",
+          "points": 0.5,
+          "method_points": 0.0,
+          "numerical_points": 0.5,
+          "condition": "Historical Capital Expenditures for FY2021-FY2023 should match the gold file."
+        },
+        {
+          "item_id": "6.2",
+          "points": 0.5,
+          "method_points": 0.0,
+          "numerical_points": 0.5,
+          "condition": "Historical Depreciation for FY2021-FY2023 should match the gold file."
+        },
+        {
+          "item_id": "6.3",
+          "points": 0.5,
+          "method_points": 0.0,
+          "numerical_points": 0.5,
+          "condition": "Historical FY2021-FY2023 PP&E Schedule End of Period balances, excluding operating lease ROU assets, should match the corresponding PP&E Schedule balances in the gold file."
+        },
+        {
+          "item_id": "6.4",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0.0,
+          "condition": "In projected years, Property, Plant and Equipment Beginning of Period should link to the prior-year End of Period balance."
+        },
+        {
+          "item_id": "6.5",
+          "points": 1.5,
+          "method_points": 1.3,
+          "numerical_points": 0.2,
+          "condition": "FY2024 Capital Expenditures should equal the average of FY2021-FY2023 Capital Expenditures multiplied by one plus FY2024 Revenue growth. From FY2025 onward, Capital Expenditures should equal the prior-year amount multiplied by one plus the current-year Revenue growth rate. Numerical credit is awarded when projected Capital Expenditures match the gold file."
+        },
+        {
+          "item_id": "6.6",
+          "points": 1.1,
+          "method_points": 0.9,
+          "numerical_points": 0.2,
+          "condition": "Historical D&A Related to PP&E as a percentage of CapEx should equal Depreciation divided by Capital Expenditures for the applicable years. Projected ratios should use a rolling two-year average, beginning with the FY2022-FY2023 average in FY2024. Numerical credit is awarded when projected ratios match the gold file."
+        },
+        {
+          "item_id": "6.7",
+          "points": 1.2,
+          "method_points": 1.0,
+          "numerical_points": 0.2,
+          "condition": "Projected Depreciation should equal projected Capital Expenditures multiplied by D&A Related to PP&E as a percentage of CapEx. Numerical credit is awarded when projected Depreciation matches the gold file."
+        },
+        {
+          "item_id": "6.8",
+          "points": 1.3,
+          "method_points": 1.0,
+          "numerical_points": 0.3,
+          "condition": "In projected years, Property, Plant and Equipment End of Period should equal Beginning of Period plus Capital Expenditures less Depreciation, adjusted appropriately for the sign convention used. Numerical credit is awarded when projected ending balances match the gold file."
+        },
+        {
+          "item_id": "6.9",
+          "points": 0.5,
+          "method_points": 0.5,
+          "numerical_points": 0.0,
+          "condition": "Projected Capital Expenditures should flow to the Cash Flow Statement as a cash outflow, projected Depreciation should flow to the income statement and UFCF build, and balance-sheet Net PP&E should include both PP&E End of Period and operating lease ROU assets."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Historical PP&E disclosures; forecast capital expenditures, depreciation and roll-forward",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Historical PP&E disclosures; forecast capital expenditures, depreciation and roll-forward",
+        "Point-allocation rationale: The schedule determines a major balance-sheet asset, a cash-flow use and a non-cash charge. Forecast CapEx, depreciation and the roll-forward receive the greatest weight."
+      ]
+    },
+    "criterion_7": {
+      "criterion_id": 7,
+      "description": "Equity and NCI schedules",
+      "max_points": 4.5,
+      "grading": [
+        {
+          "item_id": "7.1",
+          "points": 0.7,
+          "method_points": 0.1,
+          "numerical_points": 0.6,
+          "condition": "FY2021 Retained Earnings Beginning of Period and historical Dividends Paid and Declared and Other Adjustments should match the gold file. Historical Other Adjustments should also be incorporated consistently in the roll-forward."
+        },
+        {
+          "item_id": "7.2",
+          "points": 0.6,
+          "method_points": 0.6,
+          "numerical_points": 0.0,
+          "condition": "In every period from FY2022 onward, including FY2022 and FY2023, the Retained Earnings Beginning of Period cell must contain a formula reference to the immediately preceding year's Retained Earnings End of Period cell; a typed or constant value does not satisfy this link. Retained Earnings Net Income must link to the corresponding income-statement Net Income."
+        },
+        {
+          "item_id": "7.3",
+          "points": 0.8,
+          "method_points": 0.7,
+          "numerical_points": 0.1,
+          "condition": "Historical Dividend Payout Ratio should equal Dividends Paid and Declared divided by Net Income. Projected payout ratios should use a rolling three-year average, and projected Dividends should equal Net Income multiplied by the applicable payout ratio. Numerical credit is awarded when projected dividends match the gold file."
+        },
+        {
+          "item_id": "7.4",
+          "points": 0.7,
+          "method_points": 0.6,
+          "numerical_points": 0.1,
+          "condition": "Retained Earnings End of Period should equal Beginning of Period plus Net Income less Dividends Paid and Declared less Other Adjustments, adjusted appropriately for the sign convention used. Numerical credit is awarded when ending balances match the gold file."
+        },
+        {
+          "item_id": "7.5",
+          "points": 0.5,
+          "method_points": 0.0,
+          "numerical_points": 0.5,
+          "condition": "Historical NCI Beginning of Period, Net Income attributable to NCI, Other Adjustments and End of Period should match the gold file."
+        },
+        {
+          "item_id": "7.6",
+          "points": 0.7,
+          "method_points": 0.6,
+          "numerical_points": 0.1,
+          "condition": "Historical Net Income attributable to NCI as a percentage of total Net Income should be calculated from the NCI and parent earnings amounts. Projected percentages should use a rolling three-year average, projected Net Income attributable to NCI should apply that percentage to income after taxes but before minority interest, and projected Other Adjustments should be zero. Numerical credit is awarded when projected NCI income matches the gold file."
+        },
+        {
+          "item_id": "7.7",
+          "points": 0.5,
+          "method_points": 0.5,
+          "numerical_points": 0.0,
+          "condition": "In every period from FY2022 onward, NCI Beginning of Period must link to the immediately preceding year's NCI End of Period, and NCI End of Period must equal Beginning of Period plus Net Income attributable to NCI less Other Adjustments. For statement integration, the income statement's NCI or minority-interest line must reference schedule NCI income, and balance-sheet equity must reference or include schedule NCI End of Period."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Retained earnings and non-controlling interest roll-forwards and statement links",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Retained earnings and non-controlling interest roll-forwards and statement links",
+        "Point-allocation rationale: These schedules support shareholder equity, dividends, minority interest and the enterprise-to-equity bridge. Roll-forward logic receives more weight than zero-value historical inputs."
+      ]
+    },
+    "criterion_8": {
+      "criterion_id": 8,
+      "description": "Debt and interest schedule",
+      "max_points": 15.0,
+      "grading": [
+        {
+          "item_id": "8.1",
+          "points": 1.6,
+          "method_points": 0.0,
+          "numerical_points": 1.6,
+          "condition": "Historical Short-term Bank Credit/Revolver End of Period and the current and non-current portions of Long-term Debt for FY2021-FY2023 should match the gold file."
+        },
+        {
+          "item_id": "8.2",
+          "points": 2.1,
+          "method_points": 0.8,
+          "numerical_points": 1.3,
+          "condition": "Projected Current Portion of Long-term Debt should reflect the debt maturities disclosed in the 10-K, based on carrying value net of unamortized discount and issuance costs and allocated proportionally to principal where applicable. Method credit requires the correct maturity timing and carrying-value treatment; numerical credit requires the projected current portions to match the gold file."
+        },
+        {
+          "item_id": "8.3",
+          "points": 1.0,
+          "method_points": 0.8,
+          "numerical_points": 0.2,
+          "condition": "Projected Non-current Portion of Long-term Debt should roll forward by reducing the prior-year non-current balance for debt becoming current in the applicable period, with total debt changes flowing consistently to the Cash Flow Statement. Numerical credit is awarded when projected non-current balances match the gold file."
+        },
+        {
+          "item_id": "8.4",
+          "points": 0.8,
+          "method_points": 0.7,
+          "numerical_points": 0.1,
+          "condition": "Historical Weighted Average Interest Rate on Long-term Debt should equal Long-term Debt Interest Expense divided by the average of beginning and ending total Long-term Debt, including current and non-current portions. The projected rate should be held constant at the FY2023 level. Numerical credit is awarded when projected rates match the gold file."
+        },
+        {
+          "item_id": "8.5",
+          "points": 1.9,
+          "method_points": 1.8,
+          "numerical_points": 0.1,
+          "condition": "Projected Pre-revolver Cash Balance should equal prior-year Cash plus current-year Cash Flow From Operating Activities and Cash Flow From Investing Activities, projected Change in Capital Stock, Other Funds in Financing Activities and Dividends, plus the cash effect of changes in the current and non-current portions of Long-term Debt, before any revolver activity. Numerical credit is awarded when projected balances match the gold file."
+        },
+        {
+          "item_id": "8.6",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0.0,
+          "condition": "Projected Target Minimum Cash should equal Revenue multiplied by the corresponding Target Minimum Cash as a percentage of Revenue assumption."
+        },
+        {
+          "item_id": "8.7",
+          "points": 2.4,
+          "method_points": 2.1,
+          "numerical_points": 0.3,
+          "condition": "Short-term Bank Credit/Revolver Draw (Paydown) should follow the minimum-cash logic: draw the amount of any shortfall when Pre-revolver Cash is below Target Minimum Cash; otherwise repay the lesser of excess cash above the target and the revolver Beginning of Period balance. This logic may be implemented directly in Draw (Paydown) or through an algebraically equivalent Revolver End of Period calculation, provided the resulting activity enforces both limits in every projected period. Draws should be positive and paydowns negative, or an economically equivalent sign convention may be used. Numerical credit is awarded when projected activity matches the gold file."
+        },
+        {
+          "item_id": "8.8",
+          "points": 0.4,
+          "method_points": 0.4,
+          "numerical_points": 0.0,
+          "condition": "Projected Revolver Beginning of Period should link to the prior-year End of Period balance, and End of Period should equal Beginning of Period plus Draw (Paydown)."
+        },
+        {
+          "item_id": "8.9",
+          "points": 1.1,
+          "method_points": 1.0,
+          "numerical_points": 0.1,
+          "condition": "Projected Revolver Interest Expense should be linked to the circularity toggle. When circularity is on, the applicable rate should be multiplied by the average of prior-year and current-year Revolver End of Period balances; when circularity is off, interest expense should be zero. Numerical credit is awarded when projected interest matches the gold file."
+        },
+        {
+          "item_id": "8.10",
+          "points": 1.5,
+          "method_points": 1.3,
+          "numerical_points": 0.2,
+          "condition": "Projected Long-term Debt Interest Expense should be linked to the circularity toggle. When circularity is on, the applicable rate should be multiplied by the average of prior-year and current-year total Long-term Debt, including current and non-current portions; when circularity is off, interest expense should be zero. Numerical credit is awarded when projected interest matches the gold file."
+        },
+        {
+          "item_id": "8.11",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "Total Interest Expense should equal Revolver Interest Expense plus Long-term Debt Interest Expense and should link to the income statement. Numerical credit is awarded when projected totals match the gold file."
+        },
+        {
+          "item_id": "8.12",
+          "points": 1.2,
+          "method_points": 1.0,
+          "numerical_points": 0.2,
+          "condition": "Cash and Equivalents End of Period should link to the balance sheet. Historical cash interest rates should be calculated from Interest Income divided by average cash balances, the projected rate should be held constant at the FY2023 level, and projected Interest Income should use the average-balance convention when circularity is on and be zero when it is off. Historical and projected Interest Income should match the gold file for numerical credit."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Minimum cash and revolver mechanics; debt maturities; interest expense and income with circularity toggle",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Minimum cash and revolver mechanics; debt maturities; interest expense and income with circularity toggle",
+        "Point-allocation rationale: Debt maturity timing, minimum-cash funding and average-balance interest calculations are highly interconnected and affect the income statement, cash flow, balance sheet and WACC. These items receive the largest section weight."
+      ]
+    },
+    "criterion_9": {
+      "criterion_id": 9,
+      "description": "Operating lease schedule",
+      "max_points": 9.5,
+      "grading": [
+        {
+          "item_id": "9.1",
+          "points": 1.8,
+          "method_points": 0.4,
+          "numerical_points": 1.4,
+          "condition": "Historical Total Lease Cost, Cash Payment for Operating Leases, Current and Non-current Portions of Operating Lease Liabilities, Operating Lease Liabilities End of Period and Total ROU Assets End of Period should be constructed consistently from 10-K disclosures and balance-sheet groupings and should match the gold file."
+        },
+        {
+          "item_id": "9.2",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "Historical Lease Cost as a percentage of Revenue, Cash Payment as a percentage of Total Lease Cost, Operating Lease Liabilities End of Period as a percentage of Revenue and Current Lease Liabilities as a percentage of Total should be calculated from the corresponding historical amounts. Numerical credit is awarded when the ratios match the gold file."
+        },
+        {
+          "item_id": "9.3",
+          "points": 0.5,
+          "method_points": 0.5,
+          "numerical_points": 0.0,
+          "condition": "From FY2024 onward, Lease Cost as a percentage of Revenue, Cash Payment as a percentage of Total Lease Cost, Operating Lease Liabilities End of Period as a percentage of Revenue and Current Lease Liabilities as a percentage of Total should be held constant at FY2023 levels."
+        },
+        {
+          "item_id": "9.4",
+          "points": 0.9,
+          "method_points": 0.7,
+          "numerical_points": 0.2,
+          "condition": "Projected Total Lease Cost should equal Revenue multiplied by Lease Cost as a percentage of Revenue, and projected Cash Payment for Operating Leases should equal Total Lease Cost multiplied by Cash Payment as a percentage of Total Lease Cost. Numerical credit is awarded when projected amounts match the gold file."
+        },
+        {
+          "item_id": "9.5",
+          "points": 0.3,
+          "method_points": 0.3,
+          "numerical_points": 0.0,
+          "condition": "Projected Operating Lease Liabilities Beginning of Period should link to the prior-year End of Period balance."
+        },
+        {
+          "item_id": "9.6",
+          "points": 1.3,
+          "method_points": 1.0,
+          "numerical_points": 0.3,
+          "condition": "Projected Operating Lease Liabilities End of Period should equal Revenue multiplied by the applicable liability-to-revenue ratio. Current Portion should equal End of Period liabilities multiplied by the current-percentage assumption, and Non-current Portion should equal End of Period liabilities less Current Portion. Numerical credit is awarded when projected balances match the gold file."
+        },
+        {
+          "item_id": "9.7",
+          "points": 1.2,
+          "method_points": 1.0,
+          "numerical_points": 0.2,
+          "condition": "Projected Interest Accretion should be linked to the circularity toggle. When circularity is on, the Operating Lease Discount Rate should be multiplied by the average of beginning and ending Operating Lease Liabilities for the period; when circularity is off, Interest Accretion should be zero. Numerical credit is awarded when projected accretion matches the gold file."
+        },
+        {
+          "item_id": "9.8",
+          "points": 1.3,
+          "method_points": 1.0,
+          "numerical_points": 0.3,
+          "condition": "Cash Lease Payments should link to Cash Payment for Operating Leases. New Lease Additions should be back-calculated so that Ending Liabilities equal Beginning Liabilities plus Additions plus Interest Accretion less Cash Lease Payments, adjusted appropriately for the sign convention used. Numerical credit is awarded when projected additions match the gold file."
+        },
+        {
+          "item_id": "9.9",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "Projected Total ROU Assets Beginning of Period should link to the prior-year End of Period balance, and New Lease Additions for ROU assets should link to New Lease Additions in the liability roll-forward. Numerical credit is awarded when projected additions match the gold file."
+        },
+        {
+          "item_id": "9.10",
+          "points": 1.0,
+          "method_points": 0.8,
+          "numerical_points": 0.2,
+          "condition": "Projected ROU Amortization should equal Total Lease Cost less Interest Accretion, and Total ROU Assets End of Period should equal Beginning of Period plus New Lease Additions less ROU Amortization, adjusted appropriately for the sign convention used. Numerical credit is awarded when projected ROU balances match the gold file."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Operating lease liability and ROU asset roll-forwards, including interest accretion",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Operating lease liability and ROU asset roll-forwards, including interest accretion",
+        "Point-allocation rationale: The schedule must reconcile lease expense, cash payments, liabilities and ROU assets while respecting circular average-balance interest. Historical source data and the forecast roll-forwards both receive meaningful weight."
+      ]
+    },
+    "criterion_10": {
+      "criterion_id": 10,
+      "description": "WACC calculation",
+      "max_points": 6.5,
+      "grading": [
+        {
+          "item_id": "10.1",
+          "points": 0.8,
+          "method_points": 0.6,
+          "numerical_points": 0.2,
+          "condition": "Interest on Short-term Bank Credit and Interest on Long-term Debt should link to the FY2023 interest amounts in the Debt and Interest Schedule, and Total Interest Expenses should equal their sum. Numerical credit is awarded when the values match the gold file."
+        },
+        {
+          "item_id": "10.2",
+          "points": 1.6,
+          "method_points": 1.4,
+          "numerical_points": 0.2,
+          "condition": "Debt balances used in the Cost of Debt calculation should be the two-period averages of FY2022 and FY2023 Short-term Bank Credit/Revolver, Current Portion of Long-term Debt and Long-term Debt excluding Current Portion. Each underlying FY2022 and FY2023 balance used in these averages should exclude operating lease liabilities, and Total Debt should equal the sum of the three averages. Numerical credit is awarded when the debt inputs and Total Debt match the gold file."
+        },
+        {
+          "item_id": "10.3",
+          "points": 0.8,
+          "method_points": 0.7,
+          "numerical_points": 0.1,
+          "condition": "Pre-tax Cost of Debt should equal the FY2023 Total Interest Expenses output divided by the Total Debt output in the Cost of Debt calculation. Numerical credit is awarded when the result matches the gold file."
+        },
+        {
+          "item_id": "10.4",
+          "points": 0.8,
+          "method_points": 0.7,
+          "numerical_points": 0.1,
+          "condition": "Effective Tax Rate should use the FY2023 income-statement rate, or the average of positive historical rates if FY2023 is negative. Effective Cost of Debt should equal Pre-tax Cost of Debt multiplied by one minus the Effective Tax Rate. Numerical credit is awarded when the results match the gold file."
+        },
+        {
+          "item_id": "10.5",
+          "points": 1.5,
+          "method_points": 1.3,
+          "numerical_points": 0.2,
+          "condition": "Total Debt in the Capital Structure and WACC section should use FY2023 Short-term Bank Credit/Revolver, Current Portion of Long-term Debt and Long-term Debt excluding Current Portion, excluding operating leases. Equity Value should equal Latest Adjusted Closing Share Price multiplied by Fully Diluted Shares Outstanding, and debt and equity percentages should divide each component by total capital. Numerical credit is awarded when the values match the gold file."
+        },
+        {
+          "item_id": "10.6",
+          "points": 1.0,
+          "method_points": 1.0,
+          "numerical_points": 0.0,
+          "condition": "Weighted Average Cost of Capital should equal Effective Cost of Debt multiplied by Debt as a percentage of Total Capital plus the pre-existing Cost of Equity multiplied by Equity Value as a percentage of Total Capital."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Two-period debt averages, cost of debt and capital structure weighting",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Two-period debt averages, cost of debt and capital structure weighting",
+        "Point-allocation rationale: The Initial file already contains the beta and Cost of Equity build. Scoring is therefore limited to the task-created debt inputs, after-tax cost of debt, capital structure and final WACC."
+      ]
+    },
+    "criterion_11": {
+      "criterion_id": 11,
+      "description": "UFCF and NWC calculation",
+      "max_points": 8.0,
+      "grading": [
+        {
+          "item_id": "11.1",
+          "points": 0.9,
+          "method_points": 0.7,
+          "numerical_points": 0.2,
+          "condition": "Revenue, Gross Profit, EBITDA and EBIT should link to the Financial Statement Model for historical and projected periods, and the associated growth and margin rows should be calculated from those amounts. Numerical credit is awarded when the linked values and margins match the gold file."
+        },
+        {
+          "item_id": "11.2",
+          "points": 0.8,
+          "method_points": 0.6,
+          "numerical_points": 0.2,
+          "condition": "Tax on EBIT should equal EBIT multiplied by the applicable tax rate linked from the Financial Statement Model, and NOPAT/EBIAT should equal EBIT less Tax on EBIT. Numerical credit is awarded when the results match the gold file."
+        },
+        {
+          "item_id": "11.3",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "Depreciation and Amortization, Stock Compensation and Capital Expenditures should link to the corresponding Financial Statement Model or supporting schedule amounts with consistent sign conventions. Numerical credit is awarded when the linked values match the gold file."
+        },
+        {
+          "item_id": "11.4",
+          "points": 1.6,
+          "method_points": 1.2,
+          "numerical_points": 0.4,
+          "condition": "The Net Working Capital Schedule should link Short-Term Receivables, Inventories, Other Current Assets, Accounts Payable and Other Current Liabilities from the Financial Statement Model. Current Assets excluding Cash should sum the operating asset lines, Current Liabilities should sum the operating liability lines, Net Working Capital should equal Current Assets less Current Liabilities, and Change in Net Working Capital should equal the year-over-year change. Numerical credit is awarded when schedule outputs match the gold file."
+        },
+        {
+          "item_id": "11.5",
+          "points": 1.2,
+          "method_points": 1.0,
+          "numerical_points": 0.2,
+          "condition": "From FY2022 onward, Unlevered Free Cash Flow should equal NOPAT plus Depreciation and Amortization plus Stock Compensation less Change in Net Working Capital less Capital Expenditures, adjusted appropriately for the sign convention used. Numerical credit is awarded when UFCF matches the gold file."
+        },
+        {
+          "item_id": "11.6",
+          "points": 1.0,
+          "method_points": 0.9,
+          "numerical_points": 0.1,
+          "condition": "Stub Percentage and Dates for Discounting UFCF should use the Actual/Actual convention and respond to the Midyear Adjustment toggle. When the toggle is off, the stub date should be the FY2024 fiscal year end; when it is on, the stub date should be the average of the valuation date and the FY2024 fiscal year end. Numerical credit is awarded when the stub percentage and dates match the gold file."
+        },
+        {
+          "item_id": "11.7",
+          "points": 1.1,
+          "method_points": 0.9,
+          "numerical_points": 0.2,
+          "condition": "Periods for Discounting UFCF should use Actual/Actual timing from the valuation date. With Midyear Adjustment on, the stub period should use the average of valuation date and FY2024 fiscal year end, and later periods should use the average of the current and prior fiscal year ends; with the toggle off, fiscal year-end dates should be used. Numerical credit is awarded when discount periods match the gold file."
+        },
+        {
+          "item_id": "11.8",
+          "points": 0.8,
+          "method_points": 0.7,
+          "numerical_points": 0.1,
+          "condition": "Stub-adjusted UFCF should equal FY2024 UFCF multiplied by the Stub Percentage for the stub year and should link directly to the respective annual UFCF thereafter. Present Value of each Stub-adjusted UFCF should equal the cash flow divided by one plus WACC raised to the corresponding discount period. Numerical credit is awarded when the values match the gold file."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Net working capital, UFCF, stub period and mid-year discounting",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Net working capital, UFCF, stub period and mid-year discounting",
+        "Point-allocation rationale: The criterion tests the cash-flow definition used in the valuation and the timing convention applied to discounting. The NWC schedule, UFCF formula and Actual/Actual mid-year logic receive the highest weight."
+      ]
+    },
+    "criterion_12": {
+      "criterion_id": 12,
+      "description": "Implied share price calculation and sensitivity tables",
+      "max_points": 7.5,
+      "grading": [
+        {
+          "item_id": "12.1",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "Under the Multiples Method, Implied Terminal Value should equal the terminal EV/EBITDA assumption multiplied by terminal-year EBITDA. Implied Terminal UFCF Growth Rate should be back-calculated as WACC multiplied by Terminal Value less terminal-year UFCF, divided by Terminal Value plus terminal-year UFCF. Numerical credit is awarded when the results match the gold file."
+        },
+        {
+          "item_id": "12.2",
+          "points": 0.6,
+          "method_points": 0.5,
+          "numerical_points": 0.1,
+          "condition": "Under the Perpetual Growth Method, Implied Terminal Value should equal terminal-year UFCF multiplied by one plus the Terminal UFCF Growth Rate, divided by WACC less the growth rate. Implied Terminal EV/EBITDA should equal Terminal Value divided by terminal-year EBITDA. Numerical credit is awarded when the results match the gold file."
+        },
+        {
+          "item_id": "12.3",
+          "points": 0.9,
+          "method_points": 0.7,
+          "numerical_points": 0.2,
+          "condition": "For both terminal-value methods, Present Value of Terminal Value should discount Terminal Value using the Year 5 discount period, Sum of Present Value of Stub-adjusted UFCFs should sum the stub through Year 5 values, Implied Enterprise Value should equal those two present values, and the terminal-value percentage should equal Present Value of Terminal Value divided by Implied Enterprise Value. Numerical credit is awarded when the results match the gold file."
+        },
+        {
+          "item_id": "12.4",
+          "points": 1.2,
+          "method_points": 0.9,
+          "numerical_points": 0.3,
+          "condition": "Method credit requires the bridge to use FY2023 Cash & Short-Term Investments; debt comprising FY2023 Short-term Bank Credit/Revolver plus the current and non-current portions of Long-term Debt, with operating lease liabilities excluded; zero Preferred Stock; and the FY2023 NCI ending balance. Numerical credit requires all bridge inputs to match the completed reference at the template's displayed precision."
+        },
+        {
+          "item_id": "12.5",
+          "points": 0.8,
+          "method_points": 0.6,
+          "numerical_points": 0.2,
+          "condition": "Implied Equity Value should equal Implied Enterprise Value plus Cash less Debt, Preferred Stock and Non-controlling Interest. Implied Share Price should equal Implied Equity Value divided by Fully Diluted Shares Outstanding, and Premium (Discount) to Current Price should equal Implied Share Price divided by Latest Adjusted Closing Share Price less one. Numerical credit is awarded when the outputs match the gold file."
+        },
+        {
+          "item_id": "12.6",
+          "points": 0.5,
+          "method_points": 0.4,
+          "numerical_points": 0.1,
+          "condition": "For both terminal-value methods, method credit requires all six Implied Year 1 EV/Revenue, EV/EBITDA and EV/EBIT multiples to equal Implied Enterprise Value divided by FY2024 Revenue, EBITDA and EBIT, respectively. Numerical credit requires all six multiples to match the completed reference at the template's displayed precision."
+        },
+        {
+          "item_id": "12.7",
+          "points": 0.9,
+          "method_points": 0.7,
+          "numerical_points": 0.2,
+          "condition": "Method credit requires both sensitivity tables to use seven WACC scenarios centered on calculated WACC with three 0.5% increments above and below, and seven horizontal scenarios centered on the selected terminal multiple or terminal growth rate with three 0.5x or 0.5% increments above and below, respectively. Numerical credit requires every scenario header in both tables to match the completed reference at the template's displayed precision."
+        },
+        {
+          "item_id": "12.8",
+          "points": 2.0,
+          "method_points": 1.2,
+          "numerical_points": 0.8,
+          "condition": "Both implied share-price sensitivity tables should be completed using Excel two-variable Data Tables. The terminal EV/EBITDA multiple or Terminal UFCF Growth Rate should be the row input variable and WACC should be the column input variable. Numerical credit is awarded when the full sensitivity outputs match the gold file."
+        }
+      ],
+      "grading_notes": [
+        "Point-allocation scoring focus: Terminal value, enterprise-to-equity bridge and implied share-price sensitivities",
+        "Global scoring principle: Direct values provided in the Input file are not scored as standalone items.",
+        "Global scoring principle: Straightforward links and calculations receive lower weight than three-statement integration, schedule construction, conditional logic and circularity.",
+        "Section scoring focus: Terminal value, enterprise-to-equity bridge and implied share-price sensitivities",
+        "Point-allocation rationale: The enterprise-to-equity bridge and functioning two-variable Data Tables are critical to the implied share-price outputs."
+      ]
+    }
+  }
+}
