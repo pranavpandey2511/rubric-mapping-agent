@@ -159,19 +159,44 @@ family relevant.
 
 ## Use attached visual inspection only for structural ambiguity
 
-When `inspect_workbook_view` is attached, use it only after the programmatic
-diff and structured retrieval steps when layout is still needed to interpret a
-directly named rubric object. Suitable cases include multi-level period or
-scenario headers, a sensitivity table's axes, body, and corner anchor, merged
-labels spanning several candidate families, or visually separated regions whose
-structural relationship remains unclear. Compare matching `input` and
-`complete` viewports when that distinction is material.
+When `inspect_workbook_view` is attached, first compute the exact diff, parse
+the rubric, build the retrieval ledger, and retrieve candidate evidence
+programmatically. Then use the visual tool whenever a mapping remains uncertain
+or involves a structure that is difficult to verify from cell contents alone.
+This includes:
+
+- several nearby rows, columns, or families that plausibly match the same named
+  rubric object;
+- multi-level period, scenario, entity, or category headers;
+- merged labels whose scope across candidate cells is unclear;
+- a numerical-complete item whose requested family or period coverage is
+  difficult to verify;
+- a method-minimal item whose proposed mapping is unusually broad or
+  discontinuous;
+- a sensitivity table whose axes, body, corner formula, or control cells must
+  be distinguished;
+- visually separated candidate regions that may implement one named object; or
+- an apparently empty mapping when a directly named object appears to exist in
+  the workbook.
+
+Before finalizing such an item, inspect a bounded viewport containing the
+candidate cells together with their row labels, column headers, period or
+scenario axes, and nearby competing candidates. Use the screenshot to answer a
+specific question, such as whether the candidates belong to the correct named
+row, requested period band, scenario, or sensitivity-table component. Compare
+matching `input` and `complete` regions when the before-and-after layout is
+material. If the visual evidence challenges the proposed selection, re-check
+the raw cells, formulas, diff, and rubric and revise the mapping.
+
+Do not finalize an item while a visually resolvable structural question
+remains. A visual call is not required when the exact diff, workbook contents,
+formulas, headers, and rubric already establish an unambiguous mapping.
 
 The screenshot cannot determine whether a cell is eligible, prove object or
-scope binding, establish formula method or dependency, or justify expanding a
-mapping because cells look related. Resolve those decisions from raw workbook
-contents, formulas, the exact input-to-complete diff, and the rubric. Do not use
-the tool when those sources already settle the requirement.
+scope binding, establish formula method or dependency, or justify adding cells
+merely because they look related. Every emitted cell must still pass
+eligibility, object binding, scope binding, and evidence-role binding using
+programmatic evidence.
 
 ## Bind every emitted cell to the rubric
 

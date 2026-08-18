@@ -92,19 +92,36 @@ also inspect unchanged labels and headers needed to interpret those cells.
 
 ## Use attached visual inspection for semantic grouping ambiguity
 
-When `inspect_workbook_view` is attached, use it selectively after structural
-inspection when layout can clarify a subsection decision. Inspect a bounded
-viewport around the relevant Part 1 parent to understand multi-level headers,
-explicit historical/projected or scenario bands, merged labels, control and
-check placement, or whether separated groups visually belong to one named
-object. Compare matching `input` and `complete` regions when the layout change
-helps interpret the completed model.
+When `inspect_workbook_view` is attached, begin with structural inspection and
+then use the tool whenever a subsection decision remains uncertain or involves
+layout that is difficult to interpret programmatically. This includes:
+
+- two or more plausible ways to group the same cells;
+- multi-level or merged headers whose scope is unclear;
+- historical, projected, scenario, entity, or category bands;
+- repeated axes, whitespace, borders, fills, or separated blocks that may mark
+  a semantic boundary;
+- a large or dense Part 1 parent containing several formula families, controls,
+  checks, assumptions, calculations, or outputs; or
+- a proposed subsection that is non-contiguous or crosses a visible separation.
+
+Before finalizing such a Part 1 parent, inspect a bounded viewport containing
+the candidate cells and nearby titles, headers, labels, and boundaries. Use the
+screenshot to confirm or challenge the proposed grouping. Compare the matching
+`input` and `complete` regions when the completed layout or formatting changed
+materially. If the visual evidence conflicts with the proposed grouping,
+re-inspect the workbook contents and revise the subsections or families before
+writing the output.
+
+Do not finalize a parent while a visually resolvable grouping question remains.
+A visual call is not required when formulas, contents, headers, merged ranges,
+styles, and OOXML metadata already establish a clear grouping.
 
 Visual evidence may support semantic grouping, but it cannot expand the Part 1
-parent, establish exact membership, or turn formatting and proximity into a
-financial relationship. Confirm every chosen cell, formula family, period
-scope, role, and relationship from workbook structure and contents. Do not call
-the tool when those structural signals already resolve the grouping.
+parent, establish exact cell membership, or turn formatting and proximity into
+a financial or formula relationship. Confirm every emitted cell, formula
+family, period scope, role, and relationship from workbook structure and
+contents.
 
 ## Form coherent retrieval units
 

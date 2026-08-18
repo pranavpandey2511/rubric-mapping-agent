@@ -43,9 +43,28 @@ class Variant:
 
 
 VARIANTS = (
-    Variant("off-p1-sheet-p2-workbook-p3-workbook", "off", "sheet", "workbook", "workbook"),
-    Variant("off-p1-sheet-p2-sheet-p3-workbook", "off", "sheet", "sheet", "workbook"),
-    Variant("off-p1-workbook-p2-workbook-p3-workbook", "off", "workbook", "workbook", "workbook"),
+    Variant(
+        "off-p1-workbook-p2-workbook-p3-workbook",
+        "off",
+        "workbook",
+        "workbook",
+        "workbook",
+    ),
+    Variant(
+        "off-p1-sheet-p2-workbook-p3-workbook",
+        "off",
+        "sheet",
+        "workbook",
+        "workbook",
+    ),
+    Variant(
+        "off-p1-sheet-p2-sheet-p3-workbook",
+        "off",
+        "sheet",
+        "sheet",
+        "workbook",
+    ),
+    Variant("off-p1-sheet-p2-sheet-p3-sheet", "off", "sheet", "sheet", "sheet"),
     Variant(
         "libreoffice-pdf-p1-workbook-p2-workbook-p3-workbook",
         "libreoffice_pdf",
@@ -79,8 +98,9 @@ def utc_now() -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Run all 12 GPT-5.6 sol full-pipeline experiments in a fixed order, with "
-            "immutable planning metadata and resumable result tracking."
+            "Run all 15 GPT-5.6 sol full-pipeline experiments in a fixed "
+            "order, with immutable planning metadata and resumable result "
+            "tracking."
         )
     )
     parser.add_argument(
@@ -127,7 +147,7 @@ def parse_args() -> argparse.Namespace:
 def fixed_environment() -> dict[str, str]:
     return {
         "OPENAI_CODE_INTERPRETER_MEMORY": "4g",
-        "RUBRIC_MAP_SHEET_MAX_WORKERS": "1",
+        "RUBRIC_MAP_SHEET_MAX_WORKERS": "5",
         "RUBRIC_MAP_PART3_CONTEXT": "part1_part2",
         "RUBRIC_MAP_HANDOFF_JSON": "true",
         "RUBRIC_MAP_HANDOFF_SUMMARY": "true",
@@ -197,7 +217,13 @@ def _sha256(path: Path) -> str:
 def _source_snapshot() -> dict[str, Any]:
     candidates: set[Path] = set()
     for root in ("src", "skills", "evaluator/src"):
-        candidates.update(path for path in (PROJECT_ROOT / root).rglob("*") if path.is_file())
+        candidates.update(
+            path
+            for path in (PROJECT_ROOT / root).rglob("*")
+            if path.is_file()
+            and "__pycache__" not in path.parts
+            and path.suffix != ".pyc"
+        )
     for relative in (
         "scripts/run_example.py",
         "scripts/run_scope_visual_matrix.py",
@@ -353,6 +379,11 @@ def collect_metrics(run_dir: Path) -> dict[str, Any]:
     part1 = _load_json(run_dir / "part1" / "evaluation.json")["result"]
     part2 = _load_json(run_dir / "part2" / "evaluation.json")["result"]
     part3 = _load_json(run_dir / "part3" / "evaluation.json")["result"]
+    run_evaluation = _load_json(run_dir / "evaluation.json")
+    stage_runtime = {
+        stage: run_evaluation["stages"][stage]["runtime"]["totals"]
+        for stage in ("part1", "part2", "part3")
+    }
     visual_captures: dict[str, int] = {}
     for stage in ("part1", "part2", "part3"):
         capture_dir = run_dir / stage / "visual-inspection"
@@ -365,6 +396,11 @@ def collect_metrics(run_dir: Path) -> dict[str, Any]:
         "part3": {
             **part3["summary"],
             "micro": _micro_metrics(part3["items"]),
+        },
+        "runtime": {
+            **run_evaluation["totals"],
+            "stages": stage_runtime,
+            "pricing": run_evaluation["pricing"],
         },
         "visual_captures": visual_captures,
     }
@@ -398,6 +434,7 @@ def aggregate_results(
                 if runs.get(spec.key, {}).get("status") == "completed"
             ]
             metrics = [record["metrics"] for record in completed]
+            runtimes = [metric["runtime"] for metric in metrics]
             micro_counts = {
                 name: sum(
                     int(metric["part3"]["micro"][name]) for metric in metrics
@@ -452,6 +489,30 @@ def aggregate_results(
                         sum(record["metrics"]["visual_captures"].values())
                         for record in completed
                     ),
+                    "runtime": {
+                        name: sum(int(runtime[name]) for runtime in runtimes)
+                        for name in (
+                            "input",
+                            "uncached_input",
+                            "cached_input",
+                            "cache_write",
+                            "output",
+                            "reasoning_output",
+                            "total",
+                            "agent_invocation_count",
+                            "model_call_count",
+                            "container_sessions",
+                        )
+                    },
+                    "estimated_cost_usd": (
+                        round(
+                            sum(float(runtime["total_cost_usd"]) for runtime in runtimes),
+                            8,
+                        )
+                        if runtimes
+                        and all(runtime.get("cost_complete") for runtime in runtimes)
+                        else None
+                    ),
                 }
             )
     return aggregates
@@ -467,6 +528,10 @@ def _duration(value: float) -> str:
     return f"{hours:d}:{minutes:02d}:{seconds:02d}"
 
 
+def _cost(value: float | None) -> str:
+    return "-" if value is None else f"${value:.4f}"
+
+
 def render_summary(
     plan: dict[str, Any],
     specs: list[RunSpec],
@@ -478,15 +543,16 @@ def render_summary(
         "",
         "Primary Part 3 metric: task-macro criterion P/R/F1. Part 2 coverage is a gold-free structural diagnostic, not semantic accuracy.",
         "",
-        "| Variant | Model | Done | P1 P/R/F1 | P2 coverage | P3 criterion P/R/F1 | P3 item F1 | P3 micro F1 | Visual captures | Duration |",
-        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| Variant | Model | Done | P1 P/R/F1 | P2 coverage | P3 criterion P/R/F1 | P3 item F1 | P3 micro F1 | Calls | Tokens | Est. cost | Visual captures | Duration |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in aggregates:
         p1 = row["part1_task_macro"]
         p3 = row["part3_task_macro_criterion"]
         lines.append(
             "| {variant} | {model} | {done}/{planned} | {p1p}/{p1r}/{p1f} | "
-            "{p2} | {p3p}/{p3r}/{p3f} | {p3item} | {p3micro} | {captures} | {duration} |".format(
+            "{p2} | {p3p}/{p3r}/{p3f} | {p3item} | {p3micro} | {calls} | "
+            "{tokens} | {cost} | {captures} | {duration} |".format(
                 variant=row["variant_id"],
                 model=row["model_label"],
                 done=row["completed_tasks"],
@@ -500,6 +566,9 @@ def render_summary(
                 p3f=_percent(p3["f1"]),
                 p3item=_percent(row["part3_task_macro_item"]["f1"]),
                 p3micro=_percent(row["part3_micro"]["f1"]),
+                calls=row["runtime"]["model_call_count"],
+                tokens=row["runtime"]["total"],
+                cost=_cost(row["estimated_cost_usd"]),
                 captures=row["visual_capture_count"],
                 duration=_duration(row["duration_seconds"]),
             )
@@ -510,13 +579,14 @@ def render_summary(
             "",
             "## Per-task runs",
             "",
-            "| # | Variant | Model | Task | Status | P1 F1 | P2 coverage | P3 criterion F1 | Captures | Duration |",
-            "|---:|---|---|---|---|---:|---:|---:|---:|---:|",
+            "| # | Variant | Model | Task | Status | P1 F1 | P2 coverage | P3 criterion F1 | Calls | Tokens | Est. cost | Captures | Duration |",
+            "|---:|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
         ]
     )
     for spec in specs:
         record = runs.get(spec.key, {})
         metrics = record.get("metrics", {})
+        runtime = metrics.get("runtime", {})
         captures = sum(metrics.get("visual_captures", {}).values())
         lines.append(
             f"| {spec.ordinal} | {spec.variant_id} | {spec.model_label} | {spec.task} | "
@@ -524,7 +594,9 @@ def render_summary(
             f"{_percent(metrics.get('part1', {}).get('f1'))} | "
             f"{_percent(metrics.get('part2', {}).get('eligible_diff_coverage'))} | "
             f"{_percent(metrics.get('part3', {}).get('criterion_macro', {}).get('f1'))} | "
-            f"{captures} | {_duration(float(record.get('duration_seconds', 0)))} |"
+            f"{runtime.get('model_call_count', 0)} | {runtime.get('total', 0)} | "
+            f"{_cost(runtime.get('total_cost_usd'))} | {captures} | "
+            f"{_duration(float(record.get('duration_seconds', 0)))} |"
         )
 
     lines.extend(
