@@ -163,6 +163,14 @@ review/complete_annotated.xlsx
 manifest.json
 ```
 
+`part2/subsection_index.json` is advisory retrieval context and is not a hard
+completion gate. The host preserves agent-authored family and relationship
+entries without validating their schema, lineage, or changed-cell coverage. If
+either root collection is missing or is not a list, it is replaced with an
+empty list so a valid `subsections.json` can continue to Part 3. Part 2
+subsections remain strictly validated because evaluation, review generation,
+and downstream worksheet lineage depend on them.
+
 ## Local tests
 
 ```bash

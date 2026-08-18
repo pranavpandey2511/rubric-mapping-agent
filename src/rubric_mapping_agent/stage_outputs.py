@@ -19,7 +19,7 @@ from .handoff import (
 from .retrieval_index import (
     INDEX_GENERATOR,
     INDEX_SCHEMA_VERSION,
-    validate_subsection_index,
+    coerce_subsection_index,
 )
 
 
@@ -128,11 +128,8 @@ def combine_part2_artifacts(
     combined_relationships: list[dict[str, Any]] = []
     for target_sheet, artifact in scoped_artifacts:
         scope_label = target_sheet if target_sheet is not None else "workbook"
-        if set(artifact) != {"subsections", "subsection_index"}:
-            raise ValueError(
-                f"Part 2 scope {scope_label!r} must return subsections and "
-                "subsection_index"
-            )
+        if not isinstance(artifact, dict) or "subsections" not in artifact:
+            raise ValueError(f"Part 2 scope {scope_label!r} must return subsections")
         local_payload = {"subsections": artifact["subsections"]}
         validate_subsections(local_payload, sections_path)
         local_subsections = local_payload["subsections"]
@@ -142,12 +139,7 @@ def combine_part2_artifacts(
             raise ValueError(
                 f"Part 2 worksheet {target_sheet!r} returned a subsection for another sheet"
             )
-        local_index = artifact["subsection_index"]
-        validate_subsection_index(
-            local_index,
-            subsections=local_subsections,
-            eligible=eligible,
-        )
+        local_index = coerce_subsection_index(artifact.get("subsection_index"))
         combined.extend(local_subsections)
         combined_families.extend(local_index["families"])
         combined_relationships.extend(local_index["relationships"])
@@ -160,11 +152,6 @@ def combine_part2_artifacts(
         "families": combined_families,
         "relationships": combined_relationships,
     }
-    validate_subsection_index(
-        index_payload,
-        subsections=combined,
-        eligible=eligible,
-    )
     return payload, index_payload
 
 
@@ -173,18 +160,13 @@ def build_part2_artifacts(
     sections_path: Path,
     eligible: set[tuple[str, str]],
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Validate the two direct agent-authored Part 2 artifacts."""
+    """Validate subsections and preserve the index as best-effort context."""
 
-    if set(artifact) != {"subsections", "subsection_index"}:
-        raise ValueError("Part 2 must return subsections and subsection_index")
+    if not isinstance(artifact, dict) or "subsections" not in artifact:
+        raise ValueError("Part 2 must return subsections")
     payload = {"subsections": artifact["subsections"]}
     validate_subsections(payload, sections_path)
-    index_payload = artifact["subsection_index"]
-    validate_subsection_index(
-        index_payload,
-        subsections=payload["subsections"],
-        eligible=eligible,
-    )
+    index_payload = coerce_subsection_index(artifact.get("subsection_index"))
     return payload, index_payload
 
 

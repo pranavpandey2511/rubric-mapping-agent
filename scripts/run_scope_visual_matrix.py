@@ -112,6 +112,15 @@ def parse_args() -> argparse.Namespace:
             "plan for a later resume."
         ),
     )
+    parser.add_argument(
+        "--run-key",
+        action="append",
+        dest="run_keys",
+        help=(
+            "Execute only this exact planned run key; repeat to select multiple "
+            "runs while retaining the full matrix plan."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -162,6 +171,19 @@ def build_run_specs(experiment_dir: Path) -> list[RunSpec]:
                     )
                 )
     return specs
+
+
+def select_run_specs(
+    specs: list[RunSpec], selected_keys: list[str] | None
+) -> list[RunSpec]:
+    if not selected_keys:
+        return specs
+    requested = set(selected_keys)
+    known = {spec.key for spec in specs}
+    unknown = sorted(requested - known)
+    if unknown:
+        raise ValueError("Unknown experiment run key(s): " + ", ".join(unknown))
+    return [spec for spec in specs if spec.key in requested]
 
 
 def _sha256(path: Path) -> str:
@@ -567,6 +589,12 @@ def main() -> int:
 
     plan = build_plan(experiment_id, experiment_dir)
     specs = build_run_specs(experiment_dir)
+    try:
+        selected_specs = select_run_specs(specs, args.run_keys)
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+    plan["selected_run_keys"] = [spec.key for spec in selected_specs]
     if args.dry_run:
         print(json.dumps(plan, indent=2, sort_keys=True))
         return 0
@@ -595,7 +623,7 @@ def main() -> int:
 
     failures = 0
     executed = 0
-    for spec in specs:
+    for spec in selected_specs:
         previous = results["runs"].get(spec.key, {})
         if previous.get("status") == "completed":
             print(f"[{spec.ordinal:02d}/{len(specs)}] skipping completed {spec.key}")

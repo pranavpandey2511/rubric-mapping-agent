@@ -10,6 +10,7 @@ from scripts.run_scope_visual_matrix import (
     VARIANTS,
     aggregate_results,
     build_run_specs,
+    select_run_specs,
 )
 
 
@@ -43,6 +44,21 @@ class ScopeVisualMatrixTests(unittest.TestCase):
         self.assertTrue(all(row["completed_tasks"] == 0 for row in aggregates))
         self.assertTrue(all(row["invalid_output_rate"] == 1.0 for row in aggregates))
         self.assertTrue(all(row["part3_micro"]["f1"] is None for row in aggregates))
+
+    def test_select_run_specs_preserves_plan_order(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            specs = build_run_specs(Path(temp_dir))
+
+        selected = select_run_specs(specs, [specs[4].key, specs[1].key])
+
+        self.assertEqual([spec.key for spec in selected], [specs[1].key, specs[4].key])
+
+    def test_select_run_specs_rejects_unknown_keys(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            specs = build_run_specs(Path(temp_dir))
+
+        with self.assertRaisesRegex(ValueError, "unknown"):
+            select_run_specs(specs, ["unknown"])
 
 
 if __name__ == "__main__":

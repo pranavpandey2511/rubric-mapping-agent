@@ -76,7 +76,7 @@ class StagePromptReferenceTests(unittest.TestCase):
             instructions,
         )
         self.assertIn("Interior blankness never justifies moving an outer edge", instructions)
-        self.assertIn("Optimize for the grouped-pair metric", instructions)
+        self.assertNotIn("grouped-pair metric", instructions)
         self.assertIn(
             "Describe a section only after its geometry is final",
             instructions,
@@ -111,7 +111,7 @@ class StagePromptReferenceTests(unittest.TestCase):
         self.assertIn('"generated_by": "part2_agent"', output)
         self.assertNotIn("## `summary.md`", output)
 
-    def test_part3_uses_scoring_aware_prompt_and_strict_output(self) -> None:
+    def test_part3_uses_rubric_scoring_fields_and_strict_output(self) -> None:
         instructions = _normalized(
             REFERENCES / "part-3" / "part-3-workflow.md"
         )
@@ -122,8 +122,30 @@ class StagePromptReferenceTests(unittest.TestCase):
         self.assertIn("every eligible changed cell", instructions)
         self.assertIn("A formula dependency is reasoning context", instructions)
         self.assertIn("method-only mappings", instructions)
+        self.assertNotIn("precision pruning", instructions)
         self.assertIn("exactly this shape", output)
         self.assertIn("every rubric item ID exactly once", output)
+
+    def test_agent_facing_prompts_do_not_disclose_evaluation_strategy(self) -> None:
+        prompt_files = [MAPPING_SKILL]
+        for part in ("part-1", "part-2", "part-3"):
+            prompt_files.extend((REFERENCES / part).iterdir())
+
+        text = "\n".join(
+            path.read_text(encoding="utf-8") for path in prompt_files
+        ).lower()
+        for forbidden in (
+            "grouped-pair",
+            "within-section cell pairs",
+            "false-positive",
+            "precision",
+            "recall",
+            "evaluator",
+            "gold output",
+            "ablation",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, text)
 
     def test_each_part_has_conditional_stage_specific_visual_guidance(self) -> None:
         normal = {

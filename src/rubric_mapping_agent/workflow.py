@@ -22,7 +22,6 @@ from .handoff import (
     HandoffPolicy,
     validate_section_summary,
 )
-from .retrieval_index import validate_subsection_index
 from .runtime.stage import _invoke_stage, _stage_prompt
 from .stage_outputs import (
     build_part2_artifacts as _build_part2_artifacts,
@@ -313,16 +312,6 @@ def create_items_to_cells_mapping(
             section_summary_file.read_text(encoding="utf-8"),
             sections_payload["sections"],
         )
-    if subsection_index_file is not None and subsections_payload is not None:
-        subsection_index_payload = json.loads(
-            subsection_index_file.read_text(encoding="utf-8")
-        )
-        validate_subsection_index(
-            subsection_index_payload,
-            subsections=subsections_payload["subsections"],
-            eligible=eligible,
-        )
-
     sources = {
         key: required_sources[key]
         for key in ("input", "complete", "instructions", "rubric")

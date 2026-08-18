@@ -282,6 +282,7 @@ class ExampleRunnerTests(unittest.TestCase):
                     "part3_context": "part1_part2",
                     "part3_scope": "workbook",
                     "part2_retrieval_index": "agent",
+                    "part2_index_validation": "disabled",
                     "sheet_max_workers": 4,
                     "handoff_json": True,
                     "handoff_summary": True,

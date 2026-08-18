@@ -30,7 +30,8 @@ Never load multiple stage references merely because the caller is running the co
 ## Preserve the task boundary
 
 - Read only the paths explicitly supplied for the current task.
-- Never search for or open gold outputs, reviewer workbooks, prior predictions, or evaluator fixtures while generating a prediction.
+- Never search for or open reference outputs, reviewer workbooks, prior
+  predictions, or hidden fixtures while generating a prediction.
 - Part 1 and Part 2 must not receive or inspect `rubric.json`. Part 3 requires it.
 - Part 2 receives at least one of the validated Part 1 `sections.json` or its
   matching `summary.md`; both are supplied by default. Part 3 may receive the
@@ -51,7 +52,7 @@ Never load multiple stage references merely because the caller is running the co
   companion defined in Part 1's output-format reference; the orchestrator
   separates the final `sections.json` and `summary.md`. Do not print it or create other
   artifacts. Keep traces, evidence, confidence, and diagnostics out of the
-  evaluator-facing JSON. Part 2 writes strict `subsections.json` and semantic
+  strict output JSON. Part 2 writes strict `subsections.json` and semantic
   `subsection_index.json` directly to their two caller-declared hosted output
   paths.
 

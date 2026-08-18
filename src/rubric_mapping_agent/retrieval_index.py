@@ -44,6 +44,27 @@ RELATIONSHIP_TYPES = {"feeds", "linked_to", "component_of", "paired_with"}
 _CELL_REFERENCE = re.compile(r"^[A-Z]{1,3}[1-9][0-9]*$")
 
 
+def coerce_subsection_index(payload: Any) -> dict[str, Any]:
+    """Return a best-effort index object without rejecting agent output.
+
+    The retrieval index is advisory context for Part 3. Missing or incorrectly
+    typed family/relationship collections are replaced with empty lists so an
+    otherwise valid Part 2 subsection artifact can continue through the
+    pipeline. Individual family and relationship entries are intentionally not
+    validated or rewritten.
+    """
+
+    root = payload if isinstance(payload, dict) else {}
+    families = root.get("families", [])
+    relationships = root.get("relationships", [])
+    return {
+        "schema_version": root.get("schema_version", INDEX_SCHEMA_VERSION),
+        "generated_by": root.get("generated_by", INDEX_GENERATOR),
+        "families": families if isinstance(families, list) else [],
+        "relationships": relationships if isinstance(relationships, list) else [],
+    }
+
+
 def _nonempty_string(value: Any, *, context: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{context} must be a non-empty string")

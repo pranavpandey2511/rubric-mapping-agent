@@ -18,10 +18,10 @@ as the before-and-after states of the same task: use `complete.xlsx` to understa
 the finished work, `input.xlsx` to identify what the human added or changed, and
 unchanged cells as supporting context.
 
-For every rubric item, extract the eligible changed cells needed to judge each
-scored requirement. The mapping must be complete enough to cover every directly
-graded value, line item, method, link, period, scenario, or sensitivity
-structure, but it must not include unrelated helpers or formula precedents.
+For every rubric item, extract the eligible changed cells that directly satisfy
+or demonstrate each stated requirement. Cover every explicitly required value,
+line item, method, link, period, scenario, or sensitivity structure, but do not
+include unrelated helpers or formula precedents.
 
 ## Follow the declared execution scope
 
@@ -113,7 +113,7 @@ Part 1 sections and Part 2 subsections may narrow the search when supplied.
 The Part 1 summary may provide coordinate-free semantic orientation. The Part 2
 agent-authored retrieval index provides names, aliases, roles, period scope,
 formula signatures, and direct relationships over explicit Part 2 geometry.
-Every supplied artifact is retrieval context rather than a mandatory scoring
+Every supplied artifact is retrieval context rather than a mandatory semantic
 boundary; explicit JSON cells remain authoritative when present. Re-inspect the
 workbook whenever a named requirement is missing from the initial candidates
 or JSON geometry was withheld by the handoff policy.
@@ -177,7 +177,7 @@ the tool when those sources already settle the requirement.
 
 An object is directly named when the rubric explicitly identifies the
 financial line item, calculation, assumption, control, source, link, subtotal,
-or output. Objects enumerated as operands in a graded equation, bridge,
+or output. Objects enumerated as operands in a required equation, bridge,
 roll-forward, or reconciliation are directly named.
 
 An object is not directly named merely because its cell feeds a named formula,
@@ -239,7 +239,7 @@ construction, or direct link without separately grading every operand:
   source cells only when the source itself is separately graded;
 - include one complete requested copy-across or copy-down target family when
   the method must hold across several periods or scenarios; and
-- exclude a supporting cell if removing it would not prevent a distinct scored
+- exclude a supporting cell if removing it would not prevent a distinct stated
   requirement from being judged.
 
 These method-only mappings must remain limited to direct evidence for the
@@ -251,8 +251,8 @@ Do not reinterpret any clause in that item as `method-minimal`.
 
 ## Handle sensitivity analyses
 
-For an explicitly graded Excel sensitivity analysis or Data Table, identify
-the complete directly graded structure. Depending on the rubric, this may
+For an explicitly required Excel sensitivity analysis or Data Table, identify
+the complete directly required structure. Depending on the rubric, this may
 include:
 
 - the table body containing calculated results;
@@ -262,7 +262,7 @@ include:
 - linked output or input anchors; and
 - scenario or control cells explicitly named by the item.
 
-Include only eligible cells and only the structural elements the rubric grades.
+Include only eligible cells and only the structural elements the rubric requires.
 Do not map an entire surrounding section merely because it contains the table.
 
 ## Resolve special cases
@@ -282,7 +282,7 @@ Do not map an entire surrounding section merely because it contains the table.
 
 Perform these passes in order after the initial mapping.
 
-### Pass 1: precision pruning
+### Pass 1: remove unsupported candidates
 
 - Remove unnamed precedents, remote helpers, unrelated rows, transitive
   dependencies, and cells admitted only through proximity, formula shape, or
@@ -292,9 +292,9 @@ Perform these passes in order after the initial mapping.
 - Confirm that every retained cell passes eligibility, object binding, scope
   binding, and evidence-role binding.
 
-### Pass 2: numerical completeness
+### Pass 2: check requirement coverage
 
-- Recheck every `numerical-complete` item after precision pruning.
+- Recheck every `numerical-complete` item after removing unsupported candidates.
 - Make a checklist of every named numeric family and confirm that every
   requested period, scenario, entity, or category is represented.
 - Restore any qualifying named-family cell incorrectly removed by method-style

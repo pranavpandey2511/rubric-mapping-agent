@@ -70,6 +70,7 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertNotIn("xlsx-rubric-mapping", part1)
         self.assertNotIn("xlsx-rubric-mapping", part3)
         self.assertIn("`sections` and `section_summaries`", part1)
+        self.assertNotIn("evaluator", part1.lower())
         self.assertIn("/mnt/data/subsections.json", part2)
         self.assertIn("/mnt/data/subsection_index.json", part2)
         self.assertIn("Author both files\ndirectly", part2)

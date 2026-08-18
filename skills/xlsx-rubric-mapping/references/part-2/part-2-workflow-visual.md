@@ -83,7 +83,7 @@ footprint by inspecting the input and completed workbooks. Semantic prose may
 guide interpretation, but it cannot establish a coordinate or override the
 parent footprint encoded by validated JSON cells. The host retains the
 authoritative Part 1 JSON and validates every emitted Part 2 cell against it,
-even when that JSON was withheld from the agent for an ablation.
+including when that JSON was not supplied to this invocation.
 
 Inspect both workbook states and retain exact coordinates, raw formulas, cached
 values when available, local labels, period headers, styles, merged ranges, and

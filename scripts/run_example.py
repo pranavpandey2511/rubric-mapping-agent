@@ -170,6 +170,7 @@ def _configuration() -> dict[str, str | bool | int | float]:
         "part3_context": _part3_context(),
         "part3_scope": _stage_scope("part3"),
         "part2_retrieval_index": "agent",
+        "part2_index_validation": "disabled",
         "sheet_max_workers": _sheet_max_workers(),
         "handoff_json": handoff.include_json,
         "handoff_summary": handoff.include_summary,

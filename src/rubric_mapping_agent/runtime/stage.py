@@ -95,7 +95,7 @@ worksheet results into one workbook-wide artifact.
 """
     if stage == "part1":
         output_contract = """Write compact UTF-8 JSON there with exactly two root keys:
-`sections` and `section_summaries`. Keep `sections` evaluator-compatible. For
+`sections` and `section_summaries`. Keep `sections` schema-compatible. For
 every section, add exactly one `section_summaries` entry with the same local
 `section_id`, a concise business title, a concise technical detail, and a plain-
 language explanation. Use exactly `section_id`, `title`, `detail`, and

@@ -3,7 +3,12 @@ from __future__ import annotations
 import copy
 import unittest
 
-from rubric_mapping_agent.retrieval_index import validate_subsection_index
+from rubric_mapping_agent.retrieval_index import (
+    INDEX_GENERATOR,
+    INDEX_SCHEMA_VERSION,
+    coerce_subsection_index,
+    validate_subsection_index,
+)
 
 
 class RetrievalIndexTests(unittest.TestCase):
@@ -52,6 +57,34 @@ class RetrievalIndexTests(unittest.TestCase):
             self.payload,
             subsections=self.subsections,
             eligible=self.eligible,
+        )
+
+    def test_best_effort_index_supplies_missing_collections(self) -> None:
+        self.assertEqual(
+            coerce_subsection_index({"generated_by": "unexpected"}),
+            {
+                "schema_version": INDEX_SCHEMA_VERSION,
+                "generated_by": "unexpected",
+                "families": [],
+                "relationships": [],
+            },
+        )
+
+    def test_best_effort_index_replaces_non_list_collections(self) -> None:
+        self.assertEqual(
+            coerce_subsection_index(
+                {
+                    "schema_version": 999,
+                    "families": {"not": "a list"},
+                    "relationships": None,
+                }
+            ),
+            {
+                "schema_version": 999,
+                "generated_by": INDEX_GENERATOR,
+                "families": [],
+                "relationships": [],
+            },
         )
 
     def test_rejects_non_agent_provenance(self) -> None:

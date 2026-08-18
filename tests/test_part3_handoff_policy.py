@@ -87,7 +87,6 @@ class Part3HandoffPolicyTests(unittest.TestCase):
                     patch("rubric_mapping_agent.workflow.parse_sections"),
                     patch("rubric_mapping_agent.workflow._validate_subsections"),
                     patch("rubric_mapping_agent.workflow.validate_section_summary"),
-                    patch("rubric_mapping_agent.workflow.validate_subsection_index"),
                     patch(
                         "rubric_mapping_agent.stage_outputs.parse_item_mapping",
                         return_value={"item_1": frozenset()},

@@ -93,13 +93,6 @@ enumerate chosen addresses; do not ask Python to propose or choose rectangles.
 Return no ranges, boundary descriptions, candidate regions, drawings, or
 diagnostics.
 
-## Optimize for the grouped-pair metric
-
-The evaluator scores within-section cell pairs. Over-merging adds false-positive
-cross-panel pairs; over-splitting omits true pairs. Each missing or extra cell
-affects all its relationships, so large-panel errors dominate. Balance precision
-and recall without changing the evidence-backed boundary rules above.
-
 ## Write section descriptions
 
 Describe a section only after its geometry is final.

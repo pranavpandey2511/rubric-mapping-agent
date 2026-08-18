@@ -370,6 +370,48 @@ class StageScopeOrchestrationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "another sheet"):
                 _combine_part2_artifacts((("Alpha", artifact),), sections, set())
 
+    def test_part2_sheet_scope_tolerates_missing_index_families(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            sections = Path(temp_dir) / "sections.json"
+            sections.write_text(
+                json.dumps(
+                    {
+                        "sections": [
+                            {
+                                "section_id": "section_001",
+                                "sheet": "Alpha",
+                                "cells": ["A1"],
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            artifact = {
+                "subsections": [
+                    {
+                        "subsection_id": "subsection_s001_001",
+                        "parent_section_id": "section_001",
+                        "sheet": "Alpha",
+                        "cells": ["A1"],
+                        "roles": ["output"],
+                    }
+                ],
+                "subsection_index": {
+                    "schema_version": 2,
+                    "generated_by": "part2_agent",
+                    "relationships": [],
+                },
+            }
+
+            subsections, index_payload = _combine_part2_artifacts(
+                (("Alpha", artifact),), sections, {("Alpha", "A1")}
+            )
+
+        self.assertEqual(len(subsections["subsections"]), 1)
+        self.assertEqual(index_payload["families"], [])
+        self.assertEqual(index_payload["relationships"], [])
+
     def test_part3_sheet_scope_rejects_cross_sheet_output(self) -> None:
         artifact = {
             "items": [
