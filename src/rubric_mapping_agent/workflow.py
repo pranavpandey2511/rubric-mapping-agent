@@ -2,220 +2,80 @@
 
 from __future__ import annotations
 
-import argparse
 import json
-import logging
-import os
-import shutil
-import tempfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Iterable
-from uuid import uuid4
 
-from openai import OpenAI
-from openpyxl import load_workbook
-from rubric_mapping_eval.i2c_mapping import parse_item_mapping, parse_rubric
+from rubric_mapping_eval.i2c_mapping import parse_rubric
 from rubric_mapping_eval.sectioning import parse_sections
 
-from .agent import PROJECT_ROOT, StageResponse, build_agent
+from .artifacts import write_json as _write_json
+from .artifacts import write_text as _write_text
+from .configuration import (
+    environment_choice as _environment_choice,
+    part3_context as _part3_context,
+    sheet_max_workers as _sheet_max_workers,
+    stage_scope as _stage_scope,
+)
+from .handoff import (
+    HandoffPolicy,
+    validate_section_summary,
+)
+from .retrieval_index import validate_subsection_index
+from .runtime.stage import _invoke_stage, _stage_prompt
+from .stage_outputs import (
+    build_part2_artifacts as _build_part2_artifacts,
+    combine_part1_artifacts as _combine_part1_artifacts,
+    combine_part2_artifacts as _combine_part2_artifacts,
+    combine_part3_artifacts as _combine_part3_artifacts,
+    eligible_diff_cells as _eligible_diff_cells,
+    require_files as _require_files,
+    validate_part3_artifact as _validate_part3_artifact,
+    validate_subsections as _validate_subsections,
+    workbook_sheet_names as _workbook_sheet_names,
+)
 
 
-SKILL_SOURCE = PROJECT_ROOT / "skills" / "xlsx-rubric-mapping"
-LOGGER = logging.getLogger(__name__)
-CODE_INTERPRETER_MEMORY_LIMITS = {"1g", "4g", "16g", "64g"}
-
-
-def _require_files(paths: Iterable[Path]) -> None:
-    missing = [path for path in paths if not path.is_file()]
-    if missing:
-        raise FileNotFoundError("Missing input file(s): " + ", ".join(map(str, missing)))
-
-
-def _stage_prompt(
+def _invoke_sheets_in_parallel(
     stage: str,
-    local_files: dict[str, Path],
-    python_files: dict[str, str],
-) -> str:
-    listed = "\n".join(
-        f"- {name}: agent=/{local_files[name].as_posix()}; "
-        f"python={python_files[name]}"
-        for name in local_files
-    )
-    references = {
-        "part1": (
-            "workbook-inspection.md, part-1-overall-sections.md, "
-            "and output-contracts.md"
-        ),
-        "part2": (
-            "workbook-inspection.md, part-2-intermediate-sections.md, "
-            "and output-contracts.md"
-        ),
-        "part3": (
-            "workbook-inspection.md, part-3-items-to-cells.md, "
-            "and output-contracts.md"
-        ),
-    }[stage]
-    root_key = {"part1": "sections", "part2": "subsections", "part3": "items"}[stage]
-    return f"""TASK_STAGE: {stage}
+    sheet_names: Iterable[str],
+    sources: dict[str, Path],
+    *,
+    visual_artifacts_dir: Path | None = None,
+) -> tuple[tuple[str, dict[str, Any]], ...]:
+    """Run isolated worksheet invocations concurrently and return workbook order."""
 
-Use the xlsx-rubric-mapping skill. After reading SKILL.md, load only
-{references} from that skill.
-
-Allowed task files:
-{listed}
-
-Use the hosted python tool at least once. Its paths above are the authoritative
-paths for Python code. Agent paths are only for read_file access when useful.
-Do not inspect any path not listed above. Return an artifact whose only root key
-is `{root_key}`. Do not write or modify files.
-"""
-
-
-def _memory_limit() -> str:
-    memory_limit = os.getenv("OPENAI_CODE_INTERPRETER_MEMORY", "4g")
-    if memory_limit not in CODE_INTERPRETER_MEMORY_LIMITS:
-        choices = ", ".join(sorted(CODE_INTERPRETER_MEMORY_LIMITS))
-        raise ValueError(f"OPENAI_CODE_INTERPRETER_MEMORY must be one of: {choices}")
-    return memory_limit
-
-
-def _invoke_stage(stage: str, sources: dict[str, Path]) -> dict[str, Any]:
-    _require_files(sources.values())
-    with tempfile.TemporaryDirectory(prefix=f"rubric-map-{stage}-") as temp_dir:
-        workspace = Path(temp_dir)
-        staged: dict[str, Path] = {}
-        for name, source in sources.items():
-            target = workspace / "task" / f"{name}{''.join(source.suffixes)}"
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, target)
-            staged[name] = target.relative_to(workspace)
-
-        shutil.copytree(SKILL_SOURCE, workspace / "skills" / SKILL_SOURCE.name)
-        client = OpenAI()
-        container = client.containers.create(
-            name=f"rubric-map-{stage}-{uuid4().hex[:8]}",
-            memory_limit=_memory_limit(),
-            network_policy={"type": "disabled"},
-        )
+    ordered_sheets = tuple(sheet_names)
+    if not ordered_sheets:
+        return ()
+    worker_count = min(len(ordered_sheets), _sheet_max_workers())
+    results: dict[str, dict[str, Any]] = {}
+    with ThreadPoolExecutor(
+        max_workers=worker_count,
+        thread_name_prefix=f"rubric-map-{stage}",
+    ) as executor:
+        futures = {
+            executor.submit(
+                _invoke_stage,
+                stage,
+                sources,
+                target_sheet=sheet_name,
+                visual_artifacts_dir=visual_artifacts_dir,
+            ): sheet_name
+            for sheet_name in ordered_sheets
+        }
         try:
-            python_files: dict[str, str] = {}
-            for name, relative_path in staged.items():
-                with (workspace / relative_path).open("rb") as upload:
-                    remote_file = client.containers.files.create(
-                        container.id,
-                        file=upload,
-                    )
-                python_files[name] = remote_file.path
-
-            agent = build_agent(workspace, container.id)
-            result = agent.invoke(
-                {
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": _stage_prompt(stage, staged, python_files),
-                        }
-                    ]
-                },
-                config={"configurable": {"thread_id": f"{stage}-{uuid4()}"}},
-            )
-        finally:
-            try:
-                client.containers.delete(container.id)
-            except Exception:
-                LOGGER.warning(
-                    "Could not delete expired or unreachable Code Interpreter container %s",
-                    container.id,
-                    exc_info=True,
-                )
-
-    response = result.get("structured_response")
-    if isinstance(response, StageResponse):
-        return response.artifact
-    if isinstance(response, dict) and isinstance(response.get("artifact"), dict):
-        return response["artifact"]
-    raise ValueError(f"{stage} agent did not return a structured artifact")
-
-
-def _write_json(payload: dict[str, Any], output_path: Path) -> None:
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = output_path.with_suffix(output_path.suffix + f".{uuid4().hex}.tmp")
-    temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    temporary.replace(output_path)
-
-
-def _validate_subsections(
-    payload: dict[str, Any], sections_path: Path | None = None
-) -> None:
-    if (
-        set(payload) != {"subsections"}
-        or not isinstance(payload["subsections"], list)
-        or not payload["subsections"]
-    ):
-        raise ValueError("subsections.json must contain only a subsections list")
-    parents = None
-    if sections_path is not None:
-        sections = parse_sections(json.loads(sections_path.read_text(encoding="utf-8")))
-        parents = {section.section_id: section for section in sections}
-    seen: set[str] = set()
-    required = {"subsection_id", "parent_section_id", "sheet", "cells", "roles"}
-    for index, subsection in enumerate(payload["subsections"]):
-        if not isinstance(subsection, dict) or set(subsection) != required:
-            raise ValueError(f"subsections[{index}] must contain exactly {sorted(required)}")
-        identifier = subsection["subsection_id"]
-        if not isinstance(identifier, str) or not identifier or identifier in seen:
-            raise ValueError(f"invalid or duplicate subsection_id at index {index}")
-        seen.add(identifier)
-        for field in ("parent_section_id", "sheet"):
-            if not isinstance(subsection[field], str) or not subsection[field]:
-                raise ValueError(f"subsections[{index}].{field} must be non-empty")
-        if (
-            not isinstance(subsection["cells"], list)
-            or not subsection["cells"]
-            or not all(isinstance(value, str) and value for value in subsection["cells"])
-        ):
-            raise ValueError(f"subsections[{index}].cells must contain addresses")
-        if (
-            not isinstance(subsection["roles"], list)
-            or not subsection["roles"]
-            or not all(isinstance(value, str) and value for value in subsection["roles"])
-        ):
-            raise ValueError(f"subsections[{index}].roles must contain semantic tags")
-        if parents is not None:
-            parent = parents.get(subsection["parent_section_id"])
-            if parent is None or parent.sheet != subsection["sheet"]:
-                raise ValueError(f"subsections[{index}] has an invalid Part 1 parent")
-            parent_addresses = {cell.address for cell in parent.cells}
-            if not set(subsection["cells"]).issubset(parent_addresses):
-                raise ValueError(f"subsections[{index}] contains cells outside its parent")
-
-
-def _eligible_diff_cells(input_path: Path, complete_path: Path) -> set[tuple[str, str]]:
-    initial = load_workbook(input_path, data_only=False, read_only=False)
-    complete = load_workbook(complete_path, data_only=False, read_only=False)
-    try:
-        eligible: set[tuple[str, str]] = set()
-        for completed_sheet in complete.worksheets:
-            initial_sheet = (
-                initial[completed_sheet.title]
-                if completed_sheet.title in initial.sheetnames
-                else None
-            )
-            for row in completed_sheet.iter_rows():
-                for cell in row:
-                    if cell.value is None:
-                        continue
-                    initial_value = (
-                        initial_sheet[cell.coordinate].value
-                        if initial_sheet is not None
-                        else None
-                    )
-                    if initial_value != cell.value:
-                        eligible.add((completed_sheet.title, cell.coordinate.upper()))
-        return eligible
-    finally:
-        initial.close()
-        complete.close()
+            for future in as_completed(futures):
+                sheet_name = futures[future]
+                results[sheet_name] = future.result()
+        except BaseException as exc:
+            for future in futures:
+                future.cancel()
+            if hasattr(exc, "add_note"):
+                exc.add_note(f"{stage} worksheet invocation failed for {sheet_name!r}")
+            raise
+    return tuple((sheet_name, results[sheet_name]) for sheet_name in ordered_sheets)
 
 
 def create_overall_section(
@@ -224,17 +84,53 @@ def create_overall_section(
     instructions_path: str | Path,
     *,
     output_path: str | Path = "sections.json",
+    summary_output_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Create the assignment-required Part 1 artifact without rubric access."""
+    """Create Part 1 sections and their human-readable semantic summary."""
 
+    sections_output = Path(output_path).resolve()
+    summary_output = (
+        Path(summary_output_path).resolve()
+        if summary_output_path is not None
+        else sections_output.with_name("summary.md")
+    )
+    if sections_output == summary_output:
+        raise ValueError("Part 1 sections and summary outputs must be different files")
     sources = {
         "input": Path(input_path).resolve(),
         "complete": Path(complete_path).resolve(),
         "instructions": Path(instructions_path).resolve(),
     }
-    artifact = _invoke_stage("part1", sources)
+    _require_files(sources.values())
+    scope = _stage_scope("part1")
+    visual_artifacts_dir = sections_output.parent / "visual-inspection"
+    sheet_names = _workbook_sheet_names(sources["input"], sources["complete"])
+    scoped_artifacts: Iterable[tuple[str | None, dict[str, Any]]]
+    if scope == "sheet":
+        scoped_artifacts = _invoke_sheets_in_parallel(
+            "part1",
+            sheet_names,
+            sources,
+            visual_artifacts_dir=visual_artifacts_dir,
+        )
+    else:
+        scoped_artifacts = (
+            (
+                None,
+                _invoke_stage(
+                    "part1",
+                    sources,
+                    visual_artifacts_dir=visual_artifacts_dir,
+                ),
+            ),
+        )
+    artifact, summary = _combine_part1_artifacts(
+        scoped_artifacts,
+        allowed_sheets=set(sheet_names),
+    )
     parse_sections(artifact)
-    _write_json(artifact, Path(output_path).resolve())
+    _write_text(summary, summary_output)
+    _write_json(artifact, sections_output)
     return artifact
 
 
@@ -243,22 +139,94 @@ def create_intermediate_sections(
     complete_path: str | Path,
     instructions_path: str | Path,
     sections_path: str | Path,
+    section_summary_path: str | Path | None = None,
     *,
     output_path: str | Path = "subsections.json",
+    index_output_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Create the project-owned, rubric-free Part 2 handoff artifact."""
+    """Create Part 2 subsections and an agent-authored semantic index."""
 
-    sources = {
+    sections_file = Path(sections_path).resolve()
+    section_summary_file = (
+        Path(section_summary_path).resolve()
+        if section_summary_path is not None
+        else sections_file.with_name("summary.md")
+    )
+    subsections_output = Path(output_path).resolve()
+    index_output = (
+        Path(index_output_path).resolve()
+        if index_output_path is not None
+        else subsections_output.with_name("subsection_index.json")
+    )
+    if subsections_output == index_output:
+        raise ValueError("Part 2 subsections and index outputs must be different files")
+    if section_summary_file == index_output:
+        raise ValueError("Part 2 index output must not overwrite the Part 1 summary")
+    required_sources = {
         "input": Path(input_path).resolve(),
         "complete": Path(complete_path).resolve(),
         "instructions": Path(instructions_path).resolve(),
-        "sections": Path(sections_path).resolve(),
+        "sections": sections_file,
+        "section_summary": section_summary_file,
     }
-    _require_files(sources.values())
-    parse_sections(json.loads(sources["sections"].read_text(encoding="utf-8")))
-    artifact = _invoke_stage("part2", sources)
-    _validate_subsections(artifact, sources["sections"])
-    _write_json(artifact, Path(output_path).resolve())
+    _require_files(required_sources.values())
+    sections_payload = json.loads(sections_file.read_text(encoding="utf-8"))
+    sections = parse_sections(sections_payload)
+    validate_section_summary(
+        section_summary_file.read_text(encoding="utf-8"),
+        sections_payload["sections"],
+    )
+
+    policy = HandoffPolicy.from_environment()
+    policy.require_part2_context()
+    eligible = _eligible_diff_cells(
+        required_sources["input"], required_sources["complete"]
+    )
+    sources = {
+        key: required_sources[key] for key in ("input", "complete", "instructions")
+    }
+    if policy.include_json:
+        sources["sections"] = sections_file
+    if policy.include_summary:
+        sources["section_summary"] = section_summary_file
+
+    scope = _stage_scope("part2")
+    visual_artifacts_dir = subsections_output.parent / "visual-inspection"
+    if scope == "sheet":
+        workbook_sheets = _workbook_sheet_names(
+            required_sources["input"], required_sources["complete"]
+        )
+        represented_sheets = {section.sheet for section in sections}
+        unknown_sheets = sorted(represented_sheets - set(workbook_sheets))
+        if unknown_sheets:
+            raise ValueError(
+                f"Part 1 contains unknown worksheets: {unknown_sheets}"
+            )
+        target_sheets = tuple(
+            sheet_name
+            for sheet_name in workbook_sheets
+            if sheet_name in represented_sheets
+        )
+        sheet_artifacts = _invoke_sheets_in_parallel(
+            "part2",
+            target_sheets,
+            sources,
+            visual_artifacts_dir=visual_artifacts_dir,
+        )
+        artifact, index_payload = _combine_part2_artifacts(
+            sheet_artifacts, sections_file, eligible
+        )
+    else:
+        hosted_artifact = _invoke_stage(
+            "part2",
+            sources,
+            visual_artifacts_dir=visual_artifacts_dir,
+        )
+        artifact, index_payload = _build_part2_artifacts(
+            hosted_artifact, sections_file, eligible
+        )
+    _write_json(index_payload, index_output)
+    _write_json(artifact, subsections_output)
     return artifact
 
 
@@ -269,7 +237,9 @@ def create_items_to_cells_mapping(
     rubric_path: str | Path,
     *,
     sections_path: str | Path | None = None,
+    section_summary_path: str | Path | None = None,
     subsections_path: str | Path | None = None,
+    subsection_index_path: str | Path | None = None,
     output_path: str | Path = "items_to_cells.json",
 ) -> dict[str, Any]:
     """Create the assignment-required Part 3 artifact."""
@@ -277,46 +247,126 @@ def create_items_to_cells_mapping(
     input_file = Path(input_path).resolve()
     complete_file = Path(complete_path).resolve()
     rubric_file = Path(rubric_path).resolve()
-    sources = {
+    policy = HandoffPolicy.from_environment()
+    required_sources = {
         "input": input_file,
         "complete": complete_file,
         "instructions": Path(instructions_path).resolve(),
         "rubric": rubric_file,
     }
+    sections_file = Path(sections_path).resolve() if sections_path is not None else None
+    section_summary_file = (
+        Path(section_summary_path).resolve()
+        if section_summary_path is not None
+        else (
+            sections_file.with_name("summary.md")
+            if sections_file is not None and policy.include_summary
+            else None
+        )
+    )
+    subsections_file = (
+        Path(subsections_path).resolve() if subsections_path is not None else None
+    )
+    subsection_index_file = (
+        Path(subsection_index_path).resolve()
+        if subsection_index_path is not None
+        else (
+            subsections_file.with_name("subsection_index.json")
+            if subsections_file is not None and policy.include_json
+            else None
+        )
+    )
     if sections_path is not None:
-        sources["sections"] = Path(sections_path).resolve()
+        required_sources["sections"] = sections_file
     if subsections_path is not None:
         if sections_path is None:
             raise ValueError("subsections_path requires sections_path")
-        sources["subsections"] = Path(subsections_path).resolve()
+        required_sources["subsections"] = subsections_file
+    if section_summary_file is not None:
+        if sections_file is None:
+            raise ValueError("section_summary_path requires sections_path")
+        required_sources["section_summary"] = section_summary_file
+    if subsection_index_file is not None:
+        if subsections_file is None:
+            raise ValueError("subsection_index_path requires subsections_path")
+        required_sources["subsection_index"] = subsection_index_file
 
-    _require_files(sources.values())
+    _require_files(required_sources.values())
+    eligible = _eligible_diff_cells(input_file, complete_file)
     criteria = parse_rubric(json.loads(rubric_file.read_text(encoding="utf-8")))
-    if "sections" in sources:
-        parse_sections(json.loads(sources["sections"].read_text(encoding="utf-8")))
-    if "subsections" in sources:
+    expected_item_ids = tuple(
+        item_id for criterion in criteria for item_id in criterion.item_ids
+    )
+    sections_payload = None
+    subsections_payload = None
+    if sections_file is not None:
+        sections_payload = json.loads(sections_file.read_text(encoding="utf-8"))
+        parse_sections(sections_payload)
+    if subsections_file is not None:
+        subsections_payload = json.loads(subsections_file.read_text(encoding="utf-8"))
         _validate_subsections(
-            json.loads(sources["subsections"].read_text(encoding="utf-8")),
-            sources["sections"],
+            subsections_payload,
+            sections_file,
+        )
+    if section_summary_file is not None and sections_payload is not None:
+        validate_section_summary(
+            section_summary_file.read_text(encoding="utf-8"),
+            sections_payload["sections"],
+        )
+    if subsection_index_file is not None and subsections_payload is not None:
+        subsection_index_payload = json.loads(
+            subsection_index_file.read_text(encoding="utf-8")
+        )
+        validate_subsection_index(
+            subsection_index_payload,
+            subsections=subsections_payload["subsections"],
+            eligible=eligible,
         )
 
-    artifact = _invoke_stage("part3", sources)
-    parsed = parse_item_mapping(artifact, allow_empty_cells=True)
-    expected_ids = {item for criterion in criteria for item in criterion.item_ids}
-    if set(parsed) != expected_ids:
-        raise ValueError("items_to_cells.json item IDs do not match rubric.json")
+    sources = {
+        key: required_sources[key]
+        for key in ("input", "complete", "instructions", "rubric")
+    }
+    if policy.include_json:
+        if sections_file is not None:
+            sources["sections"] = sections_file
+        if subsections_file is not None:
+            sources["subsections"] = subsections_file
+        if subsection_index_file is not None:
+            sources["subsection_index"] = subsection_index_file
+    if policy.include_summary and section_summary_file is not None:
+        sources["section_summary"] = section_summary_file
 
-    eligible = _eligible_diff_cells(input_file, complete_file)
-    invalid = sorted(
-        (cell.sheet, cell.address)
-        for cells in parsed.values()
-        for cell in cells
-        if (cell.sheet, cell.address) not in eligible
-    )
-    if invalid:
-        raise ValueError(f"Part 3 mapped cells outside the eligible diff: {invalid[:10]}")
+    scope = _stage_scope("part3")
+    items_output = Path(output_path).resolve()
+    visual_artifacts_dir = items_output.parent / "visual-inspection"
+    if scope == "sheet":
+        sheet_names = _workbook_sheet_names(input_file, complete_file)
+        sheet_artifacts = _invoke_sheets_in_parallel(
+            "part3",
+            sheet_names,
+            sources,
+            visual_artifacts_dir=visual_artifacts_dir,
+        )
+        artifact = _combine_part3_artifacts(
+            sheet_artifacts,
+            expected_item_ids=expected_item_ids,
+            eligible=eligible,
+            workbook_sheet_order=sheet_names,
+        )
+    else:
+        artifact = _invoke_stage(
+            "part3",
+            sources,
+            visual_artifacts_dir=visual_artifacts_dir,
+        )
+        _validate_part3_artifact(
+            artifact,
+            expected_item_ids=expected_item_ids,
+            eligible=eligible,
+        )
 
-    _write_json(artifact, Path(output_path).resolve())
+    _write_json(artifact, items_output)
     return artifact
 
 
@@ -328,93 +378,62 @@ def run_complete_workflow(
     *,
     output_dir: str | Path,
 ) -> dict[str, Path]:
-    """Run Parts 1, 2, and 3 as separate agent invocations."""
+    """Run the configured Part 1-3 workflow as isolated agent invocations."""
 
     output = Path(output_dir).resolve()
-    sections = output / "sections.json"
-    subsections = output / "subsections.json"
-    items = output / "items_to_cells.json"
+    sections = output / "part1" / "sections.json"
+    section_summary = output / "part1" / "summary.md"
+    subsections = output / "part2" / "subsections.json"
+    subsection_index = output / "part2" / "subsection_index.json"
+    items = output / "part3" / "items_to_cells.json"
+    context = _part3_context()
     create_overall_section(
-        input_path, complete_path, instructions_path, output_path=sections
-    )
-    create_intermediate_sections(
         input_path,
         complete_path,
         instructions_path,
-        sections,
-        output_path=subsections,
+        output_path=sections,
+        summary_output_path=section_summary,
     )
+    if context == "part1_part2":
+        create_intermediate_sections(
+            input_path,
+            complete_path,
+            instructions_path,
+            sections,
+            section_summary,
+            output_path=subsections,
+            index_output_path=subsection_index,
+        )
     create_items_to_cells_mapping(
         input_path,
         complete_path,
         instructions_path,
         rubric_path,
-        sections_path=sections,
-        subsections_path=subsections,
+        sections_path=sections if context != "none" else None,
+        section_summary_path=section_summary if context != "none" else None,
+        subsections_path=subsections if context == "part1_part2" else None,
+        subsection_index_path=(
+            subsection_index if context == "part1_part2" else None
+        ),
         output_path=items,
     )
-    return {"sections": sections, "subsections": subsections, "items_to_cells": items}
-
-
-def _add_common(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--input", required=True, type=Path)
-    parser.add_argument("--complete", required=True, type=Path)
-    parser.add_argument("--instructions", required=True, type=Path)
-
-
-def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run the rubric-mapping agent workflow")
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    part1 = subparsers.add_parser("part1", help="create sections.json")
-    _add_common(part1)
-    part1.add_argument("--output", type=Path, default=Path("sections.json"))
-
-    part2 = subparsers.add_parser("part2", help="create subsections.json")
-    _add_common(part2)
-    part2.add_argument("--sections", required=True, type=Path)
-    part2.add_argument("--output", type=Path, default=Path("subsections.json"))
-
-    part3 = subparsers.add_parser("part3", help="create items_to_cells.json")
-    _add_common(part3)
-    part3.add_argument("--rubric", required=True, type=Path)
-    part3.add_argument("--sections", type=Path)
-    part3.add_argument("--subsections", type=Path)
-    part3.add_argument("--output", type=Path, default=Path("items_to_cells.json"))
-
-    all_stages = subparsers.add_parser("all", help="run Parts 1, 2, and 3")
-    _add_common(all_stages)
-    all_stages.add_argument("--rubric", required=True, type=Path)
-    all_stages.add_argument("--output-dir", required=True, type=Path)
-    return parser
+    outputs = {
+        "sections": sections,
+        "section_summary": section_summary,
+        "items_to_cells": items,
+    }
+    if context == "part1_part2":
+        outputs["subsections"] = subsections
+        outputs["subsection_index"] = subsection_index
+    return outputs
 
 
 def main() -> int:
-    args = _parser().parse_args()
-    common = (args.input, args.complete, args.instructions)
-    if args.command == "part1":
-        create_overall_section(*common, output_path=args.output)
-        print(args.output.resolve())
-    elif args.command == "part2":
-        create_intermediate_sections(
-            *common, args.sections, output_path=args.output
-        )
-        print(args.output.resolve())
-    elif args.command == "part3":
-        create_items_to_cells_mapping(
-            *common,
-            args.rubric,
-            sections_path=args.sections,
-            subsections_path=args.subsections,
-            output_path=args.output,
-        )
-        print(args.output.resolve())
-    else:
-        outputs = run_complete_workflow(
-            *common, args.rubric, output_dir=args.output_dir
-        )
-        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
-    return 0
+    """Preserve module-based CLI invocation."""
+
+    from .cli import main as cli_main
+
+    return cli_main()
 
 
 if __name__ == "__main__":

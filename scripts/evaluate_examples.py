@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from datetime import datetime, timezone
 from importlib.metadata import version
@@ -14,6 +13,8 @@ from typing import Any, Iterable
 from rubric_mapping_eval.common import EvaluationError
 from rubric_mapping_eval.i2c_mapping import evaluate_i2c_files
 from rubric_mapping_eval.sectioning import evaluate_section_files
+
+from rubric_mapping_agent.artifacts import write_json
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -42,8 +43,8 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_PREDICTIONS_DIR,
         help=(
-            "prediction root containing <task>/sections.json and "
-            f"<task>/items_to_cells.json (default: {DEFAULT_PREDICTIONS_DIR})"
+            "prediction root containing <task>/part1/sections.json and "
+            f"<task>/part3/items_to_cells.json (default: {DEFAULT_PREDICTIONS_DIR})"
         ),
     )
     parser.add_argument(
@@ -107,6 +108,19 @@ def require_predictions(paths: Iterable[Path]) -> None:
     )
 
 
+def prediction_path(
+    predictions_dir: Path,
+    task_name: str,
+    stage: str,
+    filename: str,
+) -> Path:
+    """Prefer stage-scoped outputs while retaining legacy flat-run support."""
+
+    staged = predictions_dir / task_name / stage / filename
+    legacy = predictions_dir / task_name / filename
+    return staged if staged.is_file() or not legacy.is_file() else legacy
+
+
 def required_prediction_paths(
     examples_dir: Path,
     predictions_dir: Path,
@@ -122,7 +136,7 @@ def required_prediction_paths(
             selected_tasks,
         )
         paths.extend(
-            predictions_dir / task_name / "sections.json"
+            prediction_path(predictions_dir, task_name, "part1", "sections.json")
             for task_name in examples
         )
 
@@ -135,7 +149,9 @@ def required_prediction_paths(
             selected_tasks,
         )
         paths.extend(
-            predictions_dir / task_name / "items_to_cells.json"
+            prediction_path(
+                predictions_dir, task_name, "part3", "items_to_cells.json"
+            )
             for task_name in examples
         )
     return paths
@@ -168,7 +184,9 @@ def evaluate_sectioning(
         selected_tasks,
     )
     predicted_paths = {
-        task_name: predictions_dir / task_name / "sections.json"
+        task_name: prediction_path(
+            predictions_dir, task_name, "part1", "sections.json"
+        )
         for task_name in examples
     }
 
@@ -201,7 +219,9 @@ def evaluate_i2c(
         selected_tasks,
     )
     predicted_paths = {
-        task_name: predictions_dir / task_name / "items_to_cells.json"
+        task_name: prediction_path(
+            predictions_dir, task_name, "part3", "items_to_cells.json"
+        )
         for task_name in examples
     }
 
@@ -294,11 +314,7 @@ def main() -> int:
         "summary": summary,
     }
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+    write_json(payload, output_path)
     display_summary(summary, output_path)
     return 0
 
