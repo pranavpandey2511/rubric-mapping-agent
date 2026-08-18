@@ -179,6 +179,7 @@ def evaluate_outputs(
     run_dir: Path,
     outputs: dict[str, Path],
     upstream: dict[str, Path],
+    runtime_by_stage: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Path]:
     """Evaluate only outputs produced by this completed invocation."""
 
@@ -223,8 +224,46 @@ def evaluate_outputs(
                 example_dir / "rubric.json",
             )
             payload = {"evaluator": evaluator, "result": result}
+        if runtime_by_stage is not None and selected_stage in runtime_by_stage:
+            payload["runtime"] = runtime_by_stage[selected_stage]
         payload["generated_at"] = datetime.now(timezone.utc).isoformat()
         write_json(payload, report_path)
         reports[selected_stage] = report_path
         print(f"Evaluation {selected_stage}: {report_path}")
     return reports
+
+
+def evaluation_summary(report_path: Path) -> dict[str, Any]:
+    """Return the compact metrics needed by run and assignment-level reports."""
+
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    result = payload.get("result")
+    if not isinstance(result, dict):
+        raise ValueError(f"Evaluation report has no result object: {report_path}")
+    evaluation = result.get("evaluation")
+    if evaluation == "sectioning":
+        return {
+            "evaluation": evaluation,
+            "gold_backed": True,
+            "metrics": result["metrics"],
+            "section_counts": result.get("section_counts"),
+        }
+    if evaluation == "part2_structural_diagnostics":
+        return {
+            "evaluation": evaluation,
+            "gold_backed": False,
+            "metrics": result["metrics"],
+            "limitations": result.get("limitations"),
+        }
+    if evaluation == "i2c_mapping":
+        summary = result["summary"]
+        return {
+            "evaluation": evaluation,
+            "gold_backed": True,
+            "metrics": summary["criterion_macro"],
+            "item_macro": summary.get("item_macro"),
+            "mapped_item_fraction": summary.get("mapped_item_fraction"),
+            "mapped_items": summary.get("mapped_items"),
+            "total_items": summary.get("total_items"),
+        }
+    raise ValueError(f"Unknown evaluation type {evaluation!r} in {report_path}")

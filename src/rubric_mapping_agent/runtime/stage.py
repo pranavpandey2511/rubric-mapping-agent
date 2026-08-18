@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import time
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -12,6 +13,7 @@ from uuid import uuid4
 from openai import OpenAI
 
 from ..stage_outputs import require_files as _require_files
+from ..telemetry import DetailedUsageCallbackHandler, TelemetryCollector
 from ..visual.inspection import create_visual_runtime
 from .agent import StageResponse, build_agent
 from .skills import create_stage_skill_bundle
@@ -187,7 +189,9 @@ def _invoke_stage(
     *,
     target_sheet: str | None = None,
     visual_artifacts_dir: Path | None = None,
+    telemetry: TelemetryCollector | None = None,
 ) -> dict[str, Any]:
+    started = time.monotonic()
     _require_files(sources.values())
     if stage not in STAGE_OUTPUT_FILES:
         raise ValueError(f"Unknown stage {stage!r}")
@@ -203,6 +207,9 @@ def _invoke_stage(
     skill_bundle = None
     client = None
     container = None
+    memory_limit = _memory_limit()
+    usage_handler = DetailedUsageCallbackHandler() if telemetry is not None else None
+    success = False
     try:
         skill_bundle = create_stage_skill_bundle(
             stage,
@@ -211,7 +218,7 @@ def _invoke_stage(
         client = OpenAI()
         container = client.containers.create(
             name=f"rubric-map-{stage}-{uuid4().hex[:8]}",
-            memory_limit=_memory_limit(),
+            memory_limit=memory_limit,
             network_policy={"type": "disabled"},
         )
         python_files: dict[str, str] = {}
@@ -253,6 +260,13 @@ def _invoke_stage(
                     "part3_retrieval_index": "subsection_index" in sources,
                 }
             )
+        invoke_config: dict[str, Any] = {
+            "configurable": {"thread_id": f"{stage}-{uuid4()}"},
+            "run_name": f"{stage}:{workbook_label}:{trace_scope}",
+            "metadata": trace_metadata,
+        }
+        if usage_handler is not None:
+            invoke_config["callbacks"] = [usage_handler]
         result = agent.invoke(
             {
                 "messages": [
@@ -266,11 +280,7 @@ def _invoke_stage(
                     }
                 ]
             },
-            config={
-                "configurable": {"thread_id": f"{stage}-{uuid4()}"},
-                "run_name": f"{stage}:{workbook_label}:{trace_scope}",
-                "metadata": trace_metadata,
-            },
+            config=invoke_config,
         )
         receipt = _artifact_receipt(result, stage)
         if receipt.artifact_paths != expected_outputs:
@@ -293,6 +303,7 @@ def _invoke_stage(
                 )
         else:
             artifact = downloaded[0]
+        success = True
     finally:
         if skill_bundle is not None:
             try:
@@ -319,4 +330,14 @@ def _invoke_stage(
                     container.id,
                     exc_info=True,
                 )
+        if telemetry is not None:
+            telemetry.record_invocation(
+                stage=stage,
+                target_sheet=target_sheet,
+                duration_seconds=time.monotonic() - started,
+                usage_calls=usage_handler.calls if usage_handler is not None else (),
+                container_memory=memory_limit,
+                container_created=container is not None,
+                success=success,
+            )
     return artifact

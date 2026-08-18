@@ -16,6 +16,7 @@ src/
 │   ├── managed_runs.py               # Run lineage, manifests, and evaluation
 │   ├── retrieval_index.py            # Part 2 semantic-index contract
 │   ├── stage_outputs.py              # Stage output validation and merging
+│   ├── telemetry.py                  # Runtime, usage, and cost accounting
 │   ├── workflow.py                   # Part 1–3 pipeline orchestration
 │   ├── review/                       # Annotated review-workbook creation
 │   ├── runtime/                      # Model, skills, and hosted execution
@@ -41,6 +42,9 @@ src/
   semantic families, changed-cell coverage, lineage, roles, and relationships.
 - `stage_outputs.py` validates agent-produced artifacts, computes eligible
   workbook-diff cells, and combines sheet-scoped outputs into workbook outputs.
+- `telemetry.py` records each model/container invocation and calculates
+  auditable token, cost, and wall-time aggregates without treating missing usage
+  as zero.
 - `workflow.py` is the main application layer. It runs Parts 1–3, selects sheet
   or workbook scope, parallelizes sheet calls, validates handoffs, and writes the
   final artifacts.

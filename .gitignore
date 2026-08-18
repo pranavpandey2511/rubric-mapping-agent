@@ -10,7 +10,6 @@ __pycache__/
 /artifacts/
 /outputs/
 /predictions/
-/eval_results.json
 /sections.json
 /subsections.json
 /items_to_cells.json

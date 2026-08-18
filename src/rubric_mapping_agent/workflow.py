@@ -34,6 +34,7 @@ from .stage_outputs import (
     validate_subsections as _validate_subsections,
     workbook_sheet_names as _workbook_sheet_names,
 )
+from .telemetry import TelemetryCollector
 
 
 def _invoke_sheets_in_parallel(
@@ -42,6 +43,7 @@ def _invoke_sheets_in_parallel(
     sources: dict[str, Path],
     *,
     visual_artifacts_dir: Path | None = None,
+    telemetry: TelemetryCollector | None = None,
 ) -> tuple[tuple[str, dict[str, Any]], ...]:
     """Run isolated worksheet invocations concurrently and return workbook order."""
 
@@ -61,6 +63,7 @@ def _invoke_sheets_in_parallel(
                 sources,
                 target_sheet=sheet_name,
                 visual_artifacts_dir=visual_artifacts_dir,
+                **({"telemetry": telemetry} if telemetry is not None else {}),
             ): sheet_name
             for sheet_name in ordered_sheets
         }
@@ -84,6 +87,7 @@ def create_overall_section(
     *,
     output_path: str | Path = "sections.json",
     summary_output_path: str | Path | None = None,
+    telemetry: TelemetryCollector | None = None,
 ) -> dict[str, Any]:
     """Create Part 1 sections and their human-readable semantic summary."""
 
@@ -111,6 +115,7 @@ def create_overall_section(
             sheet_names,
             sources,
             visual_artifacts_dir=visual_artifacts_dir,
+            telemetry=telemetry,
         )
     else:
         scoped_artifacts = (
@@ -120,6 +125,7 @@ def create_overall_section(
                     "part1",
                     sources,
                     visual_artifacts_dir=visual_artifacts_dir,
+                    **({"telemetry": telemetry} if telemetry is not None else {}),
                 ),
             ),
         )
@@ -142,6 +148,7 @@ def create_intermediate_sections(
     *,
     output_path: str | Path = "subsections.json",
     index_output_path: str | Path | None = None,
+    telemetry: TelemetryCollector | None = None,
 ) -> dict[str, Any]:
     """Create Part 2 subsections and an agent-authored semantic index."""
 
@@ -211,6 +218,7 @@ def create_intermediate_sections(
             target_sheets,
             sources,
             visual_artifacts_dir=visual_artifacts_dir,
+            telemetry=telemetry,
         )
         artifact, index_payload = _combine_part2_artifacts(
             sheet_artifacts, sections_file, eligible
@@ -220,6 +228,7 @@ def create_intermediate_sections(
             "part2",
             sources,
             visual_artifacts_dir=visual_artifacts_dir,
+            **({"telemetry": telemetry} if telemetry is not None else {}),
         )
         artifact, index_payload = _build_part2_artifacts(
             hosted_artifact, sections_file, eligible
@@ -240,6 +249,7 @@ def create_items_to_cells_mapping(
     subsections_path: str | Path | None = None,
     subsection_index_path: str | Path | None = None,
     output_path: str | Path = "items_to_cells.json",
+    telemetry: TelemetryCollector | None = None,
 ) -> dict[str, Any]:
     """Create the assignment-required Part 3 artifact."""
 
@@ -336,6 +346,7 @@ def create_items_to_cells_mapping(
             sheet_names,
             sources,
             visual_artifacts_dir=visual_artifacts_dir,
+            telemetry=telemetry,
         )
         artifact = _combine_part3_artifacts(
             sheet_artifacts,
@@ -348,6 +359,7 @@ def create_items_to_cells_mapping(
             "part3",
             sources,
             visual_artifacts_dir=visual_artifacts_dir,
+            **({"telemetry": telemetry} if telemetry is not None else {}),
         )
         _validate_part3_artifact(
             artifact,
@@ -366,6 +378,7 @@ def run_complete_workflow(
     rubric_path: str | Path,
     *,
     output_dir: str | Path,
+    telemetry: TelemetryCollector | None = None,
 ) -> dict[str, Path]:
     """Run the configured Part 1-3 workflow as isolated agent invocations."""
 
@@ -382,6 +395,7 @@ def run_complete_workflow(
         instructions_path,
         output_path=sections,
         summary_output_path=section_summary,
+        telemetry=telemetry,
     )
     if context == "part1_part2":
         create_intermediate_sections(
@@ -392,6 +406,7 @@ def run_complete_workflow(
             section_summary,
             output_path=subsections,
             index_output_path=subsection_index,
+            telemetry=telemetry,
         )
     create_items_to_cells_mapping(
         input_path,
@@ -405,6 +420,7 @@ def run_complete_workflow(
             subsection_index if context == "part1_part2" else None
         ),
         output_path=items,
+        telemetry=telemetry,
     )
     outputs = {
         "sections": sections,

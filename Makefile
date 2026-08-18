@@ -47,11 +47,13 @@ DIR ?=
 STAGE ?=
 EXAMPLES_ROOT ?= examples/item-to-cell-mapping
 ARTIFACTS_ROOT ?= artifacts/example-runs
+EVAL_RESULTS_OUTPUT ?= eval_results.json
 EVALUATE ?= 1
 DRY_RUN ?= 0
 
 # Internal runner command and derived flags.
 EXAMPLE_RUNNER := uv run python scripts/run_example.py
+ALL_EXAMPLES_RUNNER := uv run python -m scripts.run_examples
 EVALUATE_FLAG := $(if $(filter 1 true yes,$(EVALUATE)),--evaluate,)
 DRY_RUN_FLAG := $(if $(filter 1 true yes,$(DRY_RUN)),--dry-run,)
 AVAILABLE_EXAMPLES := $(sort $(notdir $(patsubst %/,%,$(wildcard $(EXAMPLES_ROOT)/*/))))
@@ -85,6 +87,8 @@ help:
 	@echo
 	@echo "The commands above generate and evaluate by default."
 	@echo "Each successful run also writes review/complete_annotated.xlsx."
+	@echo "Each run writes evaluation.json with per-part and total cost/time."
+	@echo "An evaluated pipeline-all also writes $(EVAL_RESULTS_OUTPUT)."
 	@echo
 	@echo "Explicit evaluation aliases:"
 	@echo
@@ -139,11 +143,9 @@ part1 part2 part3 pipeline: require-example
 
 # Run the selected stage or pipeline for every bundled example.
 part1-all part2-all part3-all pipeline-all:
-	@set -e; \
-	for example in $(AVAILABLE_EXAMPLES); do \
-		echo "==> $(patsubst %-all,%,$@): $$example"; \
-		$(MAKE) $(patsubst %-all,%,$@) EXAMPLE="$$example"; \
-	done
+	@$(ALL_EXAMPLES_RUNNER) $(patsubst %-all,%,$@) \
+		--examples-root "$(EXAMPLES_ROOT)" --artifacts-root "$(ARTIFACTS_ROOT)" \
+		--eval-results-output "$(EVAL_RESULTS_OUTPUT)" $(EVALUATE_FLAG) $(DRY_RUN_FLAG)
 
 # Explicit evaluation aliases for a single bundled example.
 part1-eval part2-eval part3-eval pipeline-eval: require-example

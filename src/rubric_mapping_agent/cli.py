@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 
 from .workflow import (
@@ -12,12 +13,18 @@ from .workflow import (
     create_overall_section,
     run_complete_workflow,
 )
+from .telemetry import TelemetryCollector
 
 
 def _add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--complete", required=True, type=Path)
     parser.add_argument("--instructions", required=True, type=Path)
+    parser.add_argument(
+        "--telemetry-output",
+        type=Path,
+        help="optional runtime, token-usage, and estimated-cost JSON output",
+    )
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -95,62 +102,79 @@ def main() -> int:
         return 0
 
     common = (args.input, args.complete, args.instructions)
-    if args.command == "part1":
-        create_overall_section(
-            *common,
-            output_path=args.output,
-            summary_output_path=args.summary_output,
-        )
-        summary_output = (
-            args.summary_output.resolve()
-            if args.summary_output is not None
-            else args.output.resolve().with_name("summary.md")
-        )
-        print(
-            json.dumps(
-                {
-                    "sections": str(args.output.resolve()),
-                    "section_summary": str(summary_output),
-                },
-                indent=2,
+    telemetry = TelemetryCollector() if args.telemetry_output is not None else None
+    started = time.monotonic()
+    try:
+        if args.command == "part1":
+            create_overall_section(
+                *common,
+                output_path=args.output,
+                summary_output_path=args.summary_output,
+                telemetry=telemetry,
             )
-        )
-    elif args.command == "part2":
-        create_intermediate_sections(
-            *common,
-            args.sections,
-            args.section_summary,
-            output_path=args.output,
-            index_output_path=args.index_output,
-        )
-        index_output = (
-            args.index_output.resolve()
-            if args.index_output is not None
-            else args.output.resolve().with_name("subsection_index.json")
-        )
-        print(
-            json.dumps(
-                {
-                    "subsections": str(args.output.resolve()),
-                    "subsection_index": str(index_output),
-                },
-                indent=2,
+            summary_output = (
+                args.summary_output.resolve()
+                if args.summary_output is not None
+                else args.output.resolve().with_name("summary.md")
             )
-        )
-    elif args.command == "part3":
-        create_items_to_cells_mapping(
-            *common,
-            args.rubric,
-            sections_path=args.sections,
-            section_summary_path=args.section_summary,
-            subsections_path=args.subsections,
-            subsection_index_path=args.subsection_index,
-            output_path=args.output,
-        )
-        print(args.output.resolve())
-    else:
-        outputs = run_complete_workflow(
-            *common, args.rubric, output_dir=args.output_dir
-        )
-        print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+            print(
+                json.dumps(
+                    {
+                        "sections": str(args.output.resolve()),
+                        "section_summary": str(summary_output),
+                    },
+                    indent=2,
+                )
+            )
+        elif args.command == "part2":
+            create_intermediate_sections(
+                *common,
+                args.sections,
+                args.section_summary,
+                output_path=args.output,
+                index_output_path=args.index_output,
+                telemetry=telemetry,
+            )
+            index_output = (
+                args.index_output.resolve()
+                if args.index_output is not None
+                else args.output.resolve().with_name("subsection_index.json")
+            )
+            print(
+                json.dumps(
+                    {
+                        "subsections": str(args.output.resolve()),
+                        "subsection_index": str(index_output),
+                    },
+                    indent=2,
+                )
+            )
+        elif args.command == "part3":
+            create_items_to_cells_mapping(
+                *common,
+                args.rubric,
+                sections_path=args.sections,
+                section_summary_path=args.section_summary,
+                subsections_path=args.subsections,
+                subsection_index_path=args.subsection_index,
+                output_path=args.output,
+                telemetry=telemetry,
+            )
+            print(args.output.resolve())
+        else:
+            outputs = run_complete_workflow(
+                *common,
+                args.rubric,
+                output_dir=args.output_dir,
+                telemetry=telemetry,
+            )
+            print(json.dumps({key: str(path) for key, path in outputs.items()}, indent=2))
+    finally:
+        if telemetry is not None:
+            command = "pipeline" if args.command == "all" else args.command
+            telemetry.write(
+                args.telemetry_output.resolve(),
+                command,
+                time.monotonic() - started,
+            )
     return 0

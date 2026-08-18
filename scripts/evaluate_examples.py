@@ -21,7 +21,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EXAMPLES_DIR = PROJECT_ROOT / "examples"
 DEFAULT_PREDICTIONS_DIR = PROJECT_ROOT / "artifacts" / "predictions"
 DEFAULT_OUTPUT_PATH = (
-    PROJECT_ROOT / "artifacts" / "evaluations" / "example-results.json"
+    PROJECT_ROOT / "eval_results.json"
 )
 
 

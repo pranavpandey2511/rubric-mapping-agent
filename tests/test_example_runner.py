@@ -24,6 +24,22 @@ from scripts.run_example import (
 
 
 class ExampleRunnerTests(unittest.TestCase):
+    def _write_runtime(self, command: list[str]) -> None:
+        path = Path(command[command.index("--telemetry-output") + 1])
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "command": command[3],
+                    "pricing": {},
+                    "invocations": [],
+                    "totals": {"wall_time_seconds": 1.0},
+                }
+            ),
+            encoding="utf-8",
+        )
+
     def _write_review(
         self,
         _workbook_path: Path,
@@ -112,6 +128,7 @@ class ExampleRunnerTests(unittest.TestCase):
             summary = Path(command[command.index("--summary-output") + 1])
             summary.parent.mkdir(parents=True, exist_ok=True)
             summary.write_text("# Generated Summary\n", encoding="utf-8")
+            self._write_runtime(command)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -239,6 +256,7 @@ class ExampleRunnerTests(unittest.TestCase):
                 index = Path(command[command.index("--index-output") + 1])
                 index.parent.mkdir(parents=True, exist_ok=True)
                 index.write_text("{}\n", encoding="utf-8")
+            self._write_runtime(command)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             artifact_root = Path(temp_dir) / "example-runs"
@@ -266,6 +284,7 @@ class ExampleRunnerTests(unittest.TestCase):
             self.assertTrue((run_dir / "part3" / "items_to_cells.json").is_file())
             self.assertFalse((run_dir / "part3" / "subsection_index.json").exists())
             self.assertTrue((run_dir / REVIEW_OUTPUT).is_file())
+            self.assertTrue((run_dir / "evaluation.json").is_file())
             manifest = json.loads(
                 (run_dir / "manifest.json").read_text(encoding="utf-8")
             )
@@ -319,6 +338,7 @@ class ExampleRunnerTests(unittest.TestCase):
                 index = Path(command[command.index("--index-output") + 1])
                 index.parent.mkdir(parents=True, exist_ok=True)
                 index.write_text("{}\n", encoding="utf-8")
+            self._write_runtime(command)
 
         def write_evaluations(
             stage: str,
@@ -326,6 +346,7 @@ class ExampleRunnerTests(unittest.TestCase):
             run_dir: Path,
             outputs: dict[str, Path],
             upstream: dict[str, Path],
+            runtimes: dict[str, dict[str, object]],
         ) -> dict[str, Path]:
             self.assertEqual(stage, "pipeline")
             self.assertEqual(example_dir.name, "keysight")
@@ -341,10 +362,42 @@ class ExampleRunnerTests(unittest.TestCase):
                 },
             )
             self.assertEqual(upstream, {})
+            self.assertEqual(set(runtimes), {"part1", "part2", "part3"})
             reports = {}
             for selected_stage in ("part1", "part2", "part3"):
                 report = run_dir / selected_stage / "evaluation.json"
-                report.write_text("{}\n", encoding="utf-8")
+                if selected_stage == "part1":
+                    result = {
+                        "evaluation": "sectioning",
+                        "metrics": {"precision": 1.0, "recall": 1.0, "f1": 1.0},
+                        "section_counts": {"gold": 1, "predicted": 1},
+                    }
+                elif selected_stage == "part2":
+                    result = {
+                        "evaluation": "part2_structural_diagnostics",
+                        "metrics": {"eligible_diff_coverage": 1.0},
+                        "limitations": "no gold",
+                    }
+                else:
+                    result = {
+                        "evaluation": "i2c_mapping",
+                        "summary": {
+                            "criterion_macro": {
+                                "precision": 1.0,
+                                "recall": 1.0,
+                                "f1": 1.0,
+                            },
+                            "item_macro": {
+                                "precision": 1.0,
+                                "recall": 1.0,
+                                "f1": 1.0,
+                            },
+                            "mapped_item_fraction": 1.0,
+                            "mapped_items": 1,
+                            "total_items": 1,
+                        },
+                    }
+                report.write_text(json.dumps({"result": result}), encoding="utf-8")
                 reports[selected_stage] = report
             return reports
 
@@ -378,6 +431,7 @@ class ExampleRunnerTests(unittest.TestCase):
                     "part1": "part1/evaluation.json",
                     "part2": "part2/evaluation.json",
                     "part3": "part3/evaluation.json",
+                    "run": "evaluation.json",
                 },
             )
 
@@ -390,6 +444,7 @@ class ExampleRunnerTests(unittest.TestCase):
                 summary = Path(command[command.index("--summary-output") + 1])
                 summary.parent.mkdir(parents=True, exist_ok=True)
                 summary.write_text("# Generated Summary\n", encoding="utf-8")
+            self._write_runtime(command)
 
         for context, expects_part1 in (("none", False), (" Part1 ", True)):
             with self.subTest(context=context), tempfile.TemporaryDirectory() as temp_dir:

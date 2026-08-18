@@ -177,7 +177,33 @@ measured improvement, so the visual path remains optional. The current code has
 local smoke-test coverage, but still needs a controlled benchmark that records
 whether the model called the tool and how the scores changed.
 
-## 7. Current code boundaries
+## 7. Runtime and cost measurement
+
+Every managed stage now captures model usage at the LangChain callback boundary
+and records one hosted-container session for each isolated workbook or worksheet
+invocation. Token pricing distinguishes uncached input, cached input, cache
+writes, and output; long-context and service-tier multipliers are applied per
+model call rather than after aggregation. Container cost uses the selected
+memory tier and measured session duration. The embedded pricing snapshot and
+method make historical results reproducible even when public prices later
+change.
+
+The cost is deliberately labeled as an estimate. Usage that cannot be priced
+causes `cost_complete=false` and a null aggregate cost instead of being counted
+as zero. This preserves the difference between a measured zero-cost operation
+and missing billing evidence. Command wall time is measured independently from
+the sum of agent-invocation durations because sheet invocations may overlap and
+because deterministic validation, review generation, evaluation, and artifact
+publication are also part of end-to-end latency.
+
+Each run writes a compact top-level `evaluation.json`, while evaluated Part 1,
+Part 2, and Part 3 reports retain their own runtime blocks. The all-example
+runner aggregates each stage and example without double-counting cost and
+writes the assignment-required `eval_results.json` after a successful evaluated
+full pipeline. Part 2 remains explicitly gold-free and is never presented as a
+precision/recall/F1 result.
+
+## 8. Current code boundaries
 
 - `workflow.py` owns the public stage functions and orchestration.
 - `runtime/` owns Deep Agent construction, skill bundling, hosted containers,
@@ -193,7 +219,7 @@ whether the model called the tool and how the scores changed.
 This decomposition keeps model judgment inside explicit stages and keeps
 validation, evaluation, and artifact publication deterministic.
 
-## 8. Next steps
+## 9. Next steps
 
 The highest-value next step is to build a stronger harness for each stage
 independently. Each harness should make context budgets, specialist sub-agents,

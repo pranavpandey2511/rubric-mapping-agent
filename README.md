@@ -95,6 +95,12 @@ make part2-all
 make part3-all
 ```
 
+`make pipeline-all` writes the assignment-required `eval_results.json` when
+evaluation is enabled. It reports Part 1 and Part 3 precision, recall, and F1
+for every labeled example, together with per-part/per-example and overall
+runtime and estimated cost. The other `*-all` commands write timestamped batch
+evaluation reports under `artifacts/evaluations/`.
+
 ## Run another task directory
 
 A task directory needs this layout:
@@ -156,12 +162,34 @@ Successful managed runs are written to
 ```text
 part1/sections.json
 part1/summary.md
+part1/runtime.json
+part1/evaluation.json          # when evaluation is enabled
 part2/subsections.json
 part2/subsection_index.json
+part2/runtime.json
+part2/evaluation.json          # structural diagnostics when enabled
 part3/items_to_cells.json
+part3/runtime.json
+part3/evaluation.json          # when evaluation is enabled
 review/complete_annotated.xlsx
+evaluation.json                # whole-command metrics, cost, and timing
 manifest.json
 ```
+
+The top-level run `evaluation.json` is written even when `EVALUATE=0`; in that
+case it contains runtime/cost data and null evaluation entries. For a pipeline
+run it contains each part separately and a command total. The reported command
+wall time covers generation, deterministic validation, review-workbook
+creation, evaluation when enabled, and manifest/report publication. Each
+part's process time is also reported separately.
+
+Cost is an estimate in USD, not an invoice. It is calculated from usage
+metadata for every model call (uncached input, cached input, cache writes, and
+output, including the published long-context multipliers) plus every hosted
+Code Interpreter container session. The report embeds the pricing date, rates,
+method, and limitations. If usage or a model rate is unavailable, the affected
+cost and aggregate total are `null` and `cost_complete` is `false`; missing
+usage is never treated as free.
 
 `part2/subsection_index.json` is advisory retrieval context and is not a hard
 completion gate. The host preserves agent-authored family and relationship

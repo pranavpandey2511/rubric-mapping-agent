@@ -5,10 +5,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import os
 import shlex
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -19,8 +21,10 @@ from rubric_mapping_agent.configuration import (
     sheet_max_workers as _sheet_max_workers,
     stage_scope as _stage_scope,
 )
+from rubric_mapping_agent.artifacts import write_json
 from rubric_mapping_agent.handoff import HandoffPolicy
 from rubric_mapping_agent.managed_runs import (
+    evaluation_summary,
     evaluate_outputs,
     evaluate_part2,
     gold_sections_path,
@@ -31,6 +35,7 @@ from rubric_mapping_agent.managed_runs import (
 )
 from rubric_mapping_agent.review import create_review_workbook
 from rubric_mapping_agent.visual.inspection import VisualWorkbookConfig
+from rubric_mapping_agent.telemetry import aggregate_stage_reports, pricing_metadata
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +54,10 @@ STAGE_OUTPUTS = {
 PART1_SUMMARY_OUTPUT = Path("part1/summary.md")
 PART2_INDEX_OUTPUT = Path("part2/subsection_index.json")
 REVIEW_OUTPUT = Path("review/complete_annotated.xlsx")
+RUN_EVALUATION_OUTPUT = Path("evaluation.json")
+STAGE_RUNTIME_OUTPUTS = {
+    stage: Path(stage) / "runtime.json" for stage in ("part1", "part2", "part3")
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -206,8 +215,11 @@ def stage_command(
     part1_summary: Path | None = None,
     part2: Path | None = None,
     part2_index: Path | None = None,
+    telemetry_output: Path | None = None,
 ) -> list[str]:
     command = _common_command(example_dir, stage)
+    if telemetry_output is not None:
+        command.extend(("--telemetry-output", str(telemetry_output)))
     if stage == "part1":
         if part1_summary is None:
             raise ValueError("Part 1 requires a summary output path")
@@ -294,6 +306,81 @@ def create_run_review(
     )
 
 
+def _read_stage_runtime(path: Path, process_wall_time_seconds: float) -> dict[str, object]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Workflow did not produce valid runtime telemetry: {path}") from exc
+    if not isinstance(payload, dict) or not isinstance(payload.get("totals"), dict):
+        raise ValueError(f"Workflow runtime telemetry has an invalid shape: {path}")
+    payload["totals"]["process_wall_time_seconds"] = round(
+        process_wall_time_seconds, 6
+    )
+    write_json(payload, path)
+    return payload
+
+
+def build_run_evaluation(
+    *,
+    example: str,
+    run_id: str,
+    command: str,
+    evaluation_enabled: bool,
+    runtimes: dict[str, dict[str, object]],
+    evaluations: dict[str, Path],
+    wall_time_seconds: float,
+) -> dict[str, object]:
+    """Build one compact report spanning metrics, stages, cost, and elapsed time."""
+
+    stages: dict[str, object] = {}
+    for selected_stage, runtime in runtimes.items():
+        stage_payload: dict[str, object] = {"runtime": runtime}
+        if selected_stage in evaluations:
+            stage_payload["evaluation"] = evaluation_summary(
+                evaluations[selected_stage]
+            )
+        else:
+            stage_payload["evaluation"] = None
+        stages[selected_stage] = stage_payload
+    return {
+        "schema_version": 1,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "example": example,
+        "run_id": run_id,
+        "command": command,
+        "evaluation_enabled": evaluation_enabled,
+        "pricing": pricing_metadata(),
+        "stages": stages,
+        "totals": aggregate_stage_reports(
+            runtimes.values(), wall_time_seconds=wall_time_seconds
+        ),
+    }
+
+
+def _display_runtime_summary(report_path: Path, report: dict[str, object]) -> None:
+    stages = report["stages"]
+    if isinstance(stages, dict):
+        for stage, value in stages.items():
+            runtime = value.get("runtime", {}) if isinstance(value, dict) else {}
+            totals = runtime.get("totals", {}) if isinstance(runtime, dict) else {}
+            seconds = float(totals.get("process_wall_time_seconds", 0))
+            cost = totals.get("total_cost_usd")
+            rendered_cost = f"${float(cost):.6f}" if cost is not None else "unavailable"
+            print(
+                f"Runtime {stage}: {seconds:.2f}s; "
+                f"estimated cost {rendered_cost}"
+            )
+    totals = report["totals"]
+    if isinstance(totals, dict):
+        cost = totals.get("total_cost_usd")
+        rendered_cost = f"${float(cost):.6f}" if cost is not None else "unavailable"
+        print(
+            f"Command total: {float(totals['wall_time_seconds']):.2f}s; "
+            f"estimated cost {rendered_cost}"
+        )
+    print(f"Run evaluation: {report_path}")
+
+
 def run_example(
     stage: str,
     example: str,
@@ -304,6 +391,7 @@ def run_example(
     evaluate: bool = False,
     run_id: str | None = None,
 ) -> Path:
+    command_started = time.monotonic()
     example_dir = (task_dir or (EXAMPLES_ROOT / example)).resolve()
     example_root = artifacts_root.resolve() / example
     run_id = run_id or utc_run_id()
@@ -318,6 +406,7 @@ def run_example(
     outputs: dict[str, Path] = {}
     upstream: dict[str, Path] = {}
     evaluations: dict[str, Path] = {}
+    runtimes: dict[str, dict[str, object]] = {}
 
     if dry_run and evaluate:
         raise ValueError("--evaluate cannot be combined with --dry-run")
@@ -385,15 +474,22 @@ def run_example(
             part1_summary=part1_summary,
             part2=part2,
             part2_index=part2_index,
+            telemetry_output=run_dir / STAGE_RUNTIME_OUTPUTS[selected_stage],
         )
         print(f"Running {selected_stage}: {shlex.join(command)}")
         if not dry_run:
             output.parent.mkdir(parents=True, exist_ok=True)
+            stage_started = time.monotonic()
             subprocess.run(command, cwd=PROJECT_ROOT, check=True)
+            stage_process_wall_time = time.monotonic() - stage_started
             if not output.is_file():
                 raise FileNotFoundError(
                     f"{selected_stage} completed without creating {output}"
                 )
+            runtime_path = run_dir / STAGE_RUNTIME_OUTPUTS[selected_stage]
+            runtimes[selected_stage] = _read_stage_runtime(
+                runtime_path, stage_process_wall_time
+            )
         outputs[selected_stage] = output
         visual_inspection = output.parent / "visual-inspection"
         if (
@@ -444,7 +540,22 @@ def run_example(
                 run_dir,
                 outputs,
                 upstream,
+                runtimes,
             )
+        run_evaluation_path = run_dir / RUN_EVALUATION_OUTPUT
+        evaluations["run"] = run_evaluation_path
+        run_report = build_run_evaluation(
+            example=example,
+            run_id=run_id,
+            command=stage,
+            evaluation_enabled=evaluate,
+            runtimes=runtimes,
+            evaluations={
+                name: path for name, path in evaluations.items() if name != "run"
+            },
+            wall_time_seconds=time.monotonic() - command_started,
+        )
+        write_json(run_report, run_evaluation_path)
         manifest = {
             "schema_version": 1,
             "example": example,
@@ -469,6 +580,10 @@ def run_example(
             "upstream": {
                 name: _relative_to_run(path, run_dir) for name, path in upstream.items()
             },
+            "runtime": {
+                name: _relative_to_run(run_dir / STAGE_RUNTIME_OUTPUTS[name], run_dir)
+                for name in runtimes
+            },
             "evaluations": {
                 name: _relative_to_run(path, run_dir)
                 for name, path in evaluations.items()
@@ -476,6 +591,19 @@ def run_example(
         }
         _write_manifest(run_dir, manifest)
         print(f"Manifest: {_manifest_path(run_dir)}")
+        run_report = build_run_evaluation(
+            example=example,
+            run_id=run_id,
+            command=stage,
+            evaluation_enabled=evaluate,
+            runtimes=runtimes,
+            evaluations={
+                name: path for name, path in evaluations.items() if name != "run"
+            },
+            wall_time_seconds=time.monotonic() - command_started,
+        )
+        write_json(run_report, run_evaluation_path)
+        _display_runtime_summary(run_evaluation_path, run_report)
     return run_dir
 
 
