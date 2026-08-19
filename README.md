@@ -206,49 +206,35 @@ and downstream worksheet lineage depend on them.
 uv run python -m unittest discover -s tests -v
 ```
 
-## Recorded development baseline
-
-This is the complete three-workbook run used as the initial full-pipeline
-reference. It is development-set evidence, not a held-out result. Part 2 has no
-gold artifact, so only structural coverage is reported.
-
-| Stage | Precision | Recall | F1 | Additional result |
-| --- | ---: | ---: | ---: | --- |
-| Part 1 | 100.00%* | 84.61% | 90.60% | 79 predicted sections |
-| Part 2 | N/A | N/A | N/A | 99.97% diff coverage; 450 subsections; 0 separators |
-| Part 3 | 70.20% | 96.43% | 76.49% | 353/353 rubric items mapped |
-
-| Example | Part 1 P/R/F1 | Part 2 diff coverage | Part 3 P/R/F1 | Tokens | Cost | Time |
-| --- | --- | --- | --- | ---: | ---: | ---: |
-| Keysight | 100.00 / 95.20 / 97.54% | 1,262/1,263 (99.92%) | 97.56 / 93.17 / 94.60% | 351,186 | $2.3792 | 12m 52.5s |
-| Textron-1 | 100.00 / 59.88 / 74.91% | 1,337/1,337 (100.00%) | 58.37 / 97.89 / 68.80% | 241,237 | $1.5269 | 7m 24.7s |
-| TopBuild | 99.99 / 98.75 / 99.37% | 1,051/1,051 (100.00%) | 54.68 / 98.25 / 66.06% | 372,133 | $2.5427 | 12m 48.0s |
-
-\* Exact Part 1 precision was 99.9958%. A later controlled Part 3 prompt study,
-using frozen Part 1/2 artifacts, improved Part 3 task-macro F1 to 89.55%.
-
 ## Controlled scope and visual sweep (2026-08-19)
 
 This development-set sweep ran five configurations across Keysight, Textron-1,
-and TopBuild: 15 successful runs in total. `W` is one workbook-scoped
-invocation; `S` is one invocation per target sheet. Sheet stages used
+and TopBuild: 15 successful runs in total. Sheet stages used
 `RUBRIC_MAP_SHEET_MAX_WORKERS=5` throughout, with 4/3/4 actual workers for the
 three workbooks. The model was `openai:gpt-5.6-sol` with 4 GB hosted Code
 Interpreter containers.
 
+**Best observed setup:** Parts 1 and 2 on sheets, Part 3 on the workbook, and
+the visual tool off. It achieved 100.00% / 82.69% / 89.59% Part 1
+precision/recall/F1 and 99.19% / 86.83% / 90.71% Part 3 criterion
+precision/recall/F1. This was the highest Part 3 F1 in the sweep, which is the
+primary quality metric. It processed all three workbooks in 27m 29s for
+$11.6516, averaging 9m 10s and $3.8839 per workbook. The tradeoff is cost: it
+was about 96% more expensive than running every part at workbook scope with the
+visual tool off.
+
 ### Aggregate results
 
-Part 1 and Part 3 report task-macro precision/recall/F1. Part 2 has no semantic
-gold labels, so coverage is a structural diagnostic rather than accuracy.
-Time and cost are summed over the three workbooks in each configuration.
+Part 1 and Part 3 report task-macro precision/recall/F1. Time and cost are
+summed over the three workbooks in each setup.
 
-| Configuration | P1 P/R/F1 | P2 coverage | P3 criterion P/R/F1 | Total time | Total cost |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| W/W/W off | 99.57/83.32/89.91% | 99.97% | 98.74/85.82/89.84% | 30m 52s | $5.9583 |
-| S/W/W off | 96.15/79.11/86.47% | 99.97% | 99.50/85.15/89.66% | 30m 13s | $8.6750 |
-| S/S/W off | 100.00/82.69/89.59% | 99.97% | 99.19/86.83/90.71% | 27m 29s | $11.6516 |
-| S/S/S off | 100.00/83.66/90.11% | 99.97% | 99.25/85.54/89.89% | 24m 41s | $13.3226 |
-| W/W/W visual | 99.44/80.81/88.22% | 99.97% | 99.39/86.40/90.52% | 31m 51s | $7.3563 |
+| Setup | Part 1 precision / recall / F1 | Part 3 criterion precision / recall / F1 | Total runtime for 3 workbooks | Total estimated cost (model + containers) |
+| --- | ---: | ---: | ---: | ---: |
+| Parts 1-3 on workbook; visual tool off | 99.57% / 83.32% / 89.91% | 98.74% / 85.82% / 89.84% | 30m 52s | $5.9583 |
+| Part 1 on sheets; Parts 2-3 on workbook; visual tool off | 96.15% / 79.11% / 86.47% | 99.50% / 85.15% / 89.66% | 30m 13s | $8.6750 |
+| **Parts 1-2 on sheets; Part 3 on workbook; visual tool off (best)** | **100.00% / 82.69% / 89.59%** | **99.19% / 86.83% / 90.71%** | **27m 29s** | **$11.6516** |
+| Parts 1-3 on sheets; visual tool off | 100.00% / 83.66% / 90.11% | 99.25% / 85.54% / 89.89% | 24m 41s | $13.3226 |
+| Parts 1-3 on workbook; visual tool on | 99.44% / 80.81% / 88.22% | 99.39% / 86.40% / 90.52% | 31m 51s | $7.3563 |
 
 ### Average time and cost per workbook
 
@@ -257,13 +243,13 @@ The end-to-end figure also includes validation, evaluation, review-workbook
 generation, and artifact publication, so it is slightly larger than the sum of
 the three stage process times.
 
-| Configuration | Part 1 average | Part 2 average | Part 3 average | End-to-end task average |
+| Setup | Part 1 average time / cost | Part 2 average time / cost | Part 3 average time / cost | Full pipeline average time / cost |
 | --- | ---: | ---: | ---: | ---: |
-| W/W/W off | 2m 02s / $0.4804 | 5m 04s / $0.8892 | 3m 09s / $0.6165 | 10m 17s / $1.9861 |
-| S/W/W off | 1m 44s / $1.1895 | 5m 09s / $0.9814 | 3m 09s / $0.7208 | 10m 04s / $2.8917 |
-| S/S/W off | 1m 57s / $1.1231 | 4m 27s / $2.1252 | 2m 44s / $0.6356 | 9m 10s / $3.8839 |
-| S/S/S off | 1m 31s / $1.0970 | 4m 09s / $1.9778 | 2m 30s / $1.3661 | 8m 14s / $4.4409 |
-| W/W/W visual | 2m 47s / $0.6866 | 5m 11s / $1.0756 | 2m 37s / $0.6900 | 10m 37s / $2.4521 |
+| Parts 1-3 on workbook; visual tool off | 2m 02s / $0.4804 | 5m 04s / $0.8892 | 3m 09s / $0.6165 | 10m 17s / $1.9861 |
+| Part 1 on sheets; Parts 2-3 on workbook; visual tool off | 1m 44s / $1.1895 | 5m 09s / $0.9814 | 3m 09s / $0.7208 | 10m 04s / $2.8917 |
+| **Parts 1-2 on sheets; Part 3 on workbook; visual tool off (best)** | **1m 57s / $1.1231** | **4m 27s / $2.1252** | **2m 44s / $0.6356** | **9m 10s / $3.8839** |
+| Parts 1-3 on sheets; visual tool off | 1m 31s / $1.0970 | 4m 09s / $1.9778 | 2m 30s / $1.3661 | 8m 14s / $4.4409 |
+| Parts 1-3 on workbook; visual tool on | 2m 47s / $0.6866 | 5m 11s / $1.0756 | 2m 37s / $0.6900 | 10m 37s / $2.4521 |
 
 Every reported cost includes both model-token charges and hosted Code
 Interpreter container charges. The estimates use the official [GPT-5.6 Sol
@@ -276,12 +262,11 @@ $49.3480 after adding the priced components from one failed Keysight visual
 attempt; that failed attempt's Part 3 cost is incomplete because the provider
 returned an HTTP 400 before normal completion.
 
-S/S/W off had the highest observed Part 3 F1 (90.71%), but the gain was
-task-dependent and nearly doubled cost versus W/W/W off. W/W/W visual reached
-90.52% with 24 actual captures. No sheet-level visual run was added because the
-quality improvement was not general enough to justify parallel local
-LibreOffice risk. W/W/W off remains the conservative default pending repeated
-runs.
+The workbook-only visual setup reached 90.52% Part 3 F1 with 24 actual captures.
+No sheet-level visual run was added because the quality improvement was not
+general enough to justify parallel local LibreOffice risk. Running every part
+at workbook scope with the visual tool off remains the lower-cost default
+pending repeated runs.
 
 This is one stochastic development-set run per task/configuration, not held-out
 evidence. Full local artifacts remain under
