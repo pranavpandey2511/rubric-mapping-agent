@@ -251,6 +251,10 @@ the three stage process times.
 | Parts 1-3 on sheets; visual tool off | 1m 31s / $1.0970 | 4m 09s / $1.9778 | 2m 30s / $1.3661 | 8m 14s / $4.4409 |
 | Parts 1-3 on workbook; visual tool on | 2m 47s / $0.6866 | 5m 11s / $1.0756 | 2m 37s / $0.6900 | 10m 37s / $2.4521 |
 
+[Example-level results for every setup](docs/scope-visual-sweep-example-results.md)
+provide the three workbook scores and their Part 1, Part 2, Part 3, and full
+pipeline time/cost breakdowns.
+
 Every reported cost includes both model-token charges and hosted Code
 Interpreter container charges. The estimates use the official [GPT-5.6 Sol
 rates](https://developers.openai.com/api/docs/models/gpt-5.6-sol) and [OpenAI
